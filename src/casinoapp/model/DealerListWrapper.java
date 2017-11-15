@@ -17,16 +17,16 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Marco Jakob
  */
 @XmlRootElement(name = "persons")
-public class PersonListWrapper {
+public class DealerListWrapper {
 
-    private List<Person> persons;
+    private List<Dealer> dealers;
 
     @XmlElement(name = "person")
-    public List<Person> getPersons() {
-        return persons;
+    public List<Dealer> getDealers() {
+        return dealers;
     }
 
-    public void setPersons(List<Person> persons) {
-        this.persons = persons;
+    public void setDealers(List<Dealer> dealers) {
+        this.dealers= dealers;
     }
 }

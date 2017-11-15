@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package casinoapp;
+import casinoapp.model.Dealer;
 import java.text.DateFormatSymbols;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +23,7 @@ import casinoapp.model.Person;
  * 
  * @author Marco Jakob
  */
-public class BirthdayStatisticsController {
+public class DateStatisticsController {
 
     @FXML
     private BarChart<String, Integer> barChart;
@@ -52,10 +53,10 @@ public class BirthdayStatisticsController {
      * 
      * @param persons
      */
-    public void setPersonData(List<Person> persons) {
+    public void setDealerData(List<Dealer> dealers) {
         // Count the number of people having their birthday in a specific month.
         int[] monthCounter = new int[12];
-        for (Person p : persons) {
+        for (Dealer p : dealers) {
             int month = p.getDate().getMonthValue() - 1;
             monthCounter[month]++;
         }

@@ -12,20 +12,21 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import casinoapp.MainApp;
+import casinoapp.model.Dealer;
 import casinoapp.model.Person;
 import casinoapp.util.DateUtil;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-public class PersonOverviewController {
+public class DealerOverviewController {
     @FXML
-    private TableView<Person> personTable;
+    private TableView<Dealer> personTable;
     @FXML
-    private TableColumn<Person, String> firstNameColumn;
+    private TableColumn<Dealer, String> firstNameColumn;
     @FXML
-    private TableColumn<Person, String> lastNameColumn;
+    private TableColumn<Dealer, String> lastNameColumn;
     @FXML
-    private TableColumn<Person, String> idColumn;
+    private TableColumn<Dealer, String> idColumn;
     @FXML
     private Label idLabel;
     @FXML
@@ -43,7 +44,7 @@ public class PersonOverviewController {
      * The constructor.
      * The constructor is called before the initialize() method.
      */
-    public PersonOverviewController() {
+    public DealerOverviewController() {
     }
 
     /**
@@ -62,11 +63,11 @@ public class PersonOverviewController {
         
 
          // Clear person details.
-         showPersonDetails(null);
+         showDealerDetails(null);
 
          // Listen for selection changes and show the person details when changed.
          personTable.getSelectionModel().selectedItemProperty().addListener(
-                 (observable, oldValue, newValue) -> showPersonDetails(newValue));
+                 (observable, oldValue, newValue) -> showDealerDetails(newValue));
      }
 
     /**
@@ -78,7 +79,7 @@ public class PersonOverviewController {
         this.mainApp = mainApp;
 
         // Add observable list data to the table
-        personTable.setItems(mainApp.getPersonData());
+        personTable.setItems(mainApp.getDealerData());
     }
     /**
  * Fills all text fields to show details about the person.
@@ -86,7 +87,7 @@ public class PersonOverviewController {
  * 
  * @param person the person or null
  */
-    private void showPersonDetails(Person person) {
+    private void showDealerDetails(Person person) {
     if (person != null) {
         // Fill the labels with info from the person object.
         idLabel.setText(person.getId());
@@ -103,7 +104,7 @@ public class PersonOverviewController {
    }
     
     @FXML
-    private void handleDeletePerson() {
+    private void handleDeleteDealer() {
     int selectedIndex = personTable.getSelectionModel().getSelectedIndex();
     if (selectedIndex >= 0) {
         personTable.getItems().remove(selectedIndex);
@@ -121,11 +122,11 @@ public class PersonOverviewController {
  * details for a new person.
  */
 @FXML
-private void handleNewPerson() {
-    Person tempPerson = new Person();
-    boolean okClicked = mainApp.showPersonEditDialog(tempPerson);
+private void handleNewDealer() {
+    Dealer tempDealer = new Dealer();
+    boolean okClicked = mainApp.showDealerEditDialog(tempDealer);
     if (okClicked) {
-        mainApp.getPersonData().add(tempPerson);
+        mainApp.getDealerData().add(tempDealer);
     }
 }
 
@@ -134,12 +135,12 @@ private void handleNewPerson() {
  * details for the selected person.
  */
 @FXML
-private void handleEditPerson() {
-    Person selectedPerson = personTable.getSelectionModel().getSelectedItem();
-    if (selectedPerson != null) {
-        boolean okClicked = mainApp.showPersonEditDialog(selectedPerson);
+private void handleEditDealer() {
+    Dealer selectedDealer = personTable.getSelectionModel().getSelectedItem();
+    if (selectedDealer != null) {
+        boolean okClicked = mainApp.showDealerEditDialog(selectedDealer);
         if (okClicked) {
-            showPersonDetails(selectedPerson);
+            showDealerDetails(selectedDealer);
         }
 
     } else {

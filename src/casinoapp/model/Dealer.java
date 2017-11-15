@@ -27,47 +27,68 @@ public class Dealer extends Person{
     private final FloatProperty moneyIn; 
     private final FloatProperty moneyOut; 
 
-    public Dealer(float baseMoney, float workedhours, float moneyIn, float moneyOut, String firstName, String lastName, String id) {
+    public Dealer(float baseMoney, float workedhours, String firstName, String lastName, String id) {
         super(firstName, lastName, id);
         this.baseMoney = new SimpleFloatProperty(baseMoney);
         this.workedhours = new SimpleFloatProperty(workedhours);
-        this.moneyIn = new SimpleFloatProperty(moneyIn);
-        this.moneyOut = new SimpleFloatProperty(moneyOut);
+        this.moneyIn = new SimpleFloatProperty(0);
+        this.moneyOut = new SimpleFloatProperty(0);
     }
 
- 
+    public Dealer() {
+        this(0, 0, null, null, null);
+    }
 
-   
-
-    public FloatProperty getBaseMoney() {
+    public FloatProperty BaseMoneyProperty() {
         return baseMoney;
     }
 
-    public FloatProperty getWorkedhours() {
+    public FloatProperty WorkedhoursProperty() {
         return workedhours;
     }
-    
-    public FloatProperty getMoneyOut() {
+
+    public FloatProperty MoneyInProperty() {
+        return moneyIn;
+    }
+
+    public FloatProperty MoneyOutProperty() {
         return moneyOut;
     }
-    
-    public void setbaseMoney(float baseMoney) {
+
+    public float getBaseMoney() {
+        return baseMoney.get();
+    }
+
+    public float  getWorkedhours() {
+        return workedhours.get();
+    }
+
+    public float  getMoneyIn() {
+        return moneyIn.get();
+    }
+
+    public float  getMoneyOut() {
+        return moneyOut.get();
+    }
+    public void setBaseMoney(float baseMoney) {
         this.baseMoney.set(baseMoney);
     }
-    
-    public void setWorkedHours(float workedHours) {
+
+    public void  setWorkedhours(float workedHours) {
         this.workedhours.set(workedHours);
     }
-    
-     public void setMoneyIn(float moneyIn) {
+
+    public void  setMoneyIn(float moneyIn) {
         this.moneyIn.set(moneyIn);
     }
-     
-      public void setMoneyOut(float moneyOut) {
+
+    public void setMoneyOut(float moneyOut) {
         this.moneyOut.set(moneyOut);
     }
 
-    public FloatProperty getMoneyIn() {
-        return moneyIn;
-    }
+    
+
+ 
+    
+  
 }

@@ -7,9 +7,9 @@
 <?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="450.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="casinoapp.BirthdayStatisticsController">
+<AnchorPane id="AnchorPane" prefHeight="450.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="casinoapp.DateStatisticsController">
    <children>
-      <BarChart fx:id="barChart" layoutX="31.0" layoutY="14.0" prefHeight="450.0" prefWidth="620.0" title="Birthday Statistics" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BarChart fx:id="barChart" layoutX="31.0" layoutY="14.0" prefHeight="450.0" prefWidth="620.0" title="Date Statistics" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <xAxis>
           <CategoryAxis side="BOTTOM" fx:id="xAxis" />
         </xAxis>

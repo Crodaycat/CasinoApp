@@ -5,6 +5,7 @@
  */
 package casinoapp;
 
+import casinoapp.model.Dealer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -18,7 +19,7 @@ import casinoapp.util.DateUtil;
  * 
  * @author Marco Jakob
  */
-public class PersonEditDialogController {
+public class DealerEditDialogController {
 
     @FXML
     private TextField firstNameField;
@@ -29,7 +30,7 @@ public class PersonEditDialogController {
 
 
     private Stage dialogStage;
-    private Person person;
+    private Dealer dealer;
     private boolean okClicked = false;
 
     /**
@@ -54,12 +55,12 @@ public class PersonEditDialogController {
      * 
      * @param person
      */
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setDealer(Dealer dealer) {
+        this.dealer = dealer;
 
-        firstNameField.setText(person.getFirstName());
-        lastNameField.setText(person.getLastName());
-        dateField.setText(DateUtil.format(person.getDate()));
+        firstNameField.setText(dealer.getFirstName());
+        lastNameField.setText(dealer.getLastName());
+        dateField.setText(DateUtil.format(dealer.getDate()));
         dateField.setPromptText("dd.mm.yyyy");
     }
 
@@ -78,9 +79,9 @@ public class PersonEditDialogController {
     @FXML
     private void handleOk() {
         if (isInputValid()) {
-            person.setFirstName(firstNameField.getText());
-            person.setLastName(lastNameField.getText());
-            person.setDate(DateUtil.parse(dateField.getText()));
+            dealer.setFirstName(firstNameField.getText());
+            dealer.setLastName(lastNameField.getText());
+            dealer.setDate(DateUtil.parse(dateField.getText()));
 
             okClicked = true;
             dialogStage.close();

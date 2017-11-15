@@ -12,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import casinoapp.MainApp;
+import casinoapp.model.Dealer;
 
 /**
  * The controller for the root layout. The root layout provides the basic
@@ -39,8 +40,8 @@ public class RootLayoutController {
      */
     @FXML
     private void handleNew() {
-        mainApp.getPersonData().clear();
-        mainApp.setPersonFilePath(null);
+        mainApp.getDealerData().clear();
+        mainApp.setDealerFilePath(null);
     }
 
     /**
@@ -59,7 +60,7 @@ public class RootLayoutController {
         File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
 
         if (file != null) {
-            mainApp.loadPersonDataFromFile(file);
+            mainApp.loadDealerDataFromFile(file);
         }
     }
 
@@ -69,9 +70,9 @@ public class RootLayoutController {
      */
     @FXML
     private void handleSave() {
-        File personFile = mainApp.getPersonFilePath();
+        File personFile = mainApp.getDealerFilePath();
         if (personFile != null) {
-            mainApp.savePersonDataToFile(personFile);
+            mainApp.saveDealerDataToFile(personFile);
         } else {
             handleSaveAs();
         }
@@ -97,7 +98,7 @@ public class RootLayoutController {
             if (!file.getPath().endsWith(".xml")) {
                 file = new File(file.getPath() + ".xml");
             }
-            mainApp.savePersonDataToFile(file);
+            mainApp.saveDealerDataToFile(file);
         }
     }
 
@@ -124,6 +125,6 @@ public class RootLayoutController {
     
     @FXML
         private void handleShowBirthdayStatistics() {
-     mainApp.showBirthdayStatistics();
+     mainApp.showDateStatistics();
 }
 }
