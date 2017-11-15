@@ -27,6 +27,28 @@ public class DealerEditDialogController {
     private TextField lastNameField;
     @FXML
     private TextField dateField;
+    @FXML
+    private TextField baseMoneyField;
+    @FXML
+    private TextField financialProfitField;
+    @FXML
+    private TextField inMoneyBaccara;
+    @FXML
+    private TextField margingProfitPoker;
+    @FXML
+    private TextField margingProfitBaccara;
+    @FXML
+    private TextField margingProfitRulete;
+    @FXML
+    private TextField inMoneyBlackjack;
+    @FXML
+    private TextField inMoneyRulete;
+    @FXML
+    private TextField inMoneyPoker;
+    @FXML
+    private TextField margingProfitBlackjack;
+        
+    
 
 
     private Stage dialogStage;
