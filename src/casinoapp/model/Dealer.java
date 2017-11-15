@@ -25,7 +25,7 @@ public class Dealer extends Person{
     private final FloatProperty baseMoney; 
     private final FloatProperty workedhours; 
     private final StringProperty financialProfit; 
-    final float hourWorkedPrice=30000;
+    public final float hourWorkedPrice=30000;
     
 
     public Dealer(float baseMoney, float workedhours, String firstName, String lastName, String id) {
