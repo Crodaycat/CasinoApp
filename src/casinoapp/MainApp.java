@@ -8,7 +8,7 @@ package casinoapp;
 
 
 import casinoapp.model.Dealer;
-import casinoapp.model.DealerListWrapper;
+import casinoapp.model.DealerAndMachineListWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.prefs.Preferences;
@@ -20,6 +20,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -35,6 +37,7 @@ public class MainApp extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
+    private RootLayoutController rootLayoutController;
     
     private ObservableList<Dealer> dealerData = FXCollections.observableArrayList();
 
@@ -43,13 +46,6 @@ public class MainApp extends Application {
      */
     public MainApp() {
         // Add some sample data
-        dealerData.add(new Dealer(0,0,"Hans", "Muster","464"));
-        dealerData.add(new Dealer(14545,0,"Ruth", "Mueller","546"));
-        dealerData.add(new Dealer(587874,6,"Heinz", "Kurz","546"));
-        dealerData.add(new Dealer(546584,9,"Cornelia", "Meier","646"));
-        dealerData.add(new Dealer(465565,12,"Werner", "Meyer","6546"));
-        dealerData.add(new Dealer(245687,2,"Lydia", "Kunz","645"));
-        dealerData.add(new Dealer(8746874,23,"Anna", "Best","4645"));
        
     }
 
@@ -69,8 +65,8 @@ public class MainApp extends Application {
         this.primaryStage.getIcons().add(new Image("file:images/address_book_32.png"));
 
         initRootLayout();
-
-        showDealerOverview();
+        
+        showDealerOverview(rootLayoutController.getDealerTab());
     }
 
     /**
@@ -93,8 +89,8 @@ public void initRootLayout() {
         primaryStage.setScene(scene);
 
         // Give the controller access to the main app.
-        RootLayoutController controller = loader.getController();
-        controller.setMainApp(this);
+        rootLayoutController = loader.getController();
+        rootLayoutController.setMainApp(this);
 
         primaryStage.show();
     } catch (IOException e) {
@@ -111,7 +107,7 @@ public void initRootLayout() {
     /**
      * Shows the person overview inside the root layout.
      */
-    public void showDealerOverview() {
+    public void showDealerOverview(Tab tab) {
     try {
         // Load person overview.
         FXMLLoader loader = new FXMLLoader();
@@ -119,7 +115,7 @@ public void initRootLayout() {
         AnchorPane dealerOverview = (AnchorPane) loader.load();
 
         // Set person overview into the center of root layout.
-        rootLayout.setCenter(dealerOverview);
+        tab.setContent(dealerOverview);
 
         // Give the controller access to the main app.
         DealerOverviewController controller = loader.getController();
@@ -206,11 +202,11 @@ public void setDealerFilePath(File file) {
 public void loadDealerDataFromFile(File file) {
     try {
         JAXBContext context = JAXBContext
-                .newInstance(DealerListWrapper.class);
+                .newInstance(DealerAndMachineListWrapper.class);
         Unmarshaller um = context.createUnmarshaller();
 
         // Reading XML from the file and unmarshalling.
-        DealerListWrapper wrapper = (DealerListWrapper) um.unmarshal(file);
+        DealerAndMachineListWrapper wrapper = (DealerAndMachineListWrapper) um.unmarshal(file);
 
         dealerData.clear();
         dealerData.addAll(wrapper.getDealers());
@@ -235,12 +231,12 @@ public void loadDealerDataFromFile(File file) {
  */
 public void saveDealerDataToFile(File file) {
     try {
-        JAXBContext context = JAXBContext.newInstance(DealerListWrapper.class);
+        JAXBContext context = JAXBContext.newInstance(DealerAndMachineListWrapper.class);
         Marshaller m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
         // Wrapping our person data.
-        DealerListWrapper wrapper = new DealerListWrapper();
+        DealerAndMachineListWrapper wrapper = new DealerAndMachineListWrapper();
         wrapper.setDealers(dealerData);
 
         // Marshalling and saving XML to the file.

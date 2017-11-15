@@ -13,6 +13,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import casinoapp.MainApp;
 import casinoapp.model.Dealer;
+import javafx.scene.control.Tab;
 
 /**
  * The controller for the root layout. The root layout provides the basic
@@ -22,7 +23,12 @@ import casinoapp.model.Dealer;
  * @author Marco Jakob
  */
 public class RootLayoutController {
-
+    
+    @FXML
+    private Tab dealerTab;
+    @FXML
+    private Tab machinesTab;
+    
     // Reference to the main application
     private MainApp mainApp;
 
@@ -101,6 +107,8 @@ public class RootLayoutController {
             mainApp.saveDealerDataToFile(file);
         }
     }
+    
+    
 
     /**
      * Opens an about dialog.
@@ -127,4 +135,12 @@ public class RootLayoutController {
         private void handleShowBirthdayStatistics() {
      mainApp.showDateStatistics();
 }
+
+    public Tab getDealerTab() {
+        return dealerTab;
+    }
+
+    public Tab getMachinesTab() {
+        return machinesTab;
+    }
 }
