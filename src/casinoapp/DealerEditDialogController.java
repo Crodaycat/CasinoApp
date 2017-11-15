@@ -20,12 +20,9 @@ import casinoapp.util.DateUtil;
  * @author Marco Jakob
  */
 public class DealerEditDialogController {
-<<<<<<< HEAD
+
     @FXML
     private TextField idField;
-=======
-    
->>>>>>> master
     @FXML
     private TextField firstNameField;
     @FXML
@@ -88,8 +85,8 @@ public class DealerEditDialogController {
         idField.setText(dealer.getId());
         firstNameField.setText(dealer.getFirstName());
         lastNameField.setText(dealer.getLastName());
-//        dateField.setText(DateUtil.format(dealer.getDate()));
-   //     dateField.setPromptText("dd.mm.yyyy");
+        dateField.setText(DateUtil.format(dealer.getDate()));
+        dateField.setPromptText("dd.mm.yyyy");
         baseMoneyField.setText(String.valueOf(dealer.getBaseMoney()));
     }
 

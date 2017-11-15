@@ -148,7 +148,7 @@ public boolean showDealerEditDialog(Dealer dealer) {
         // Set the person into the controller.
         DealerEditDialogController controller = loader.getController();
         controller.setDialogStage(dialogStage);
-        controller.setDealer(dealer);
+         controller.setDealer(dealer);
 
         // Show the dialog and wait until the user closes it
         dialogStage.showAndWait();
