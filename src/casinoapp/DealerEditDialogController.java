@@ -20,8 +20,12 @@ import casinoapp.util.DateUtil;
  * @author Marco Jakob
  */
 public class DealerEditDialogController {
+<<<<<<< HEAD
     @FXML
     private TextField idField;
+=======
+    
+>>>>>>> master
     @FXML
     private TextField firstNameField;
     @FXML
@@ -158,5 +162,14 @@ public class DealerEditDialogController {
 
             return false;
         }
+    }
+    
+    private void makeBalance () {
+        float baccaraMoney = Float.parseFloat(inMoneyBaccara.getText()) * (Float.parseFloat(margingProfitBaccara.getText()) / 100f);
+        float pokerMoney = Float.parseFloat(inMoneyPoker.getText()) * (Float.parseFloat(margingProfitPoker.getText()) / 100f);
+        float ruletteMoney = Float.parseFloat(inMoneyRulete.getText()) * (Float.parseFloat(margingProfitRulete.getText()) / 100f);
+        float blackJackMoney = Float.parseFloat(inMoneyBlackjack.getText()) * (Float.parseFloat(margingProfitBlackjack.getText()) / 100f);
+        String financialProfit = Float.toString(baccaraMoney + pokerMoney + ruletteMoney + blackJackMoney - (dealer.getWorkedhours()* dealer.hourWorkedPrice));
+        dealer.setFinancialProfit(financialProfit);
     }
 }
