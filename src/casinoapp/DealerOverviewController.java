@@ -15,12 +15,20 @@ import casinoapp.MainApp;
 import casinoapp.model.Dealer;
 import casinoapp.model.Person;
 import casinoapp.util.DateUtil;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class DealerOverviewController {
     @FXML
-    private TableView<Dealer> personTable;
+    private TableView<Dealer> dealerTable;
     @FXML
     private TableColumn<Dealer, String> firstNameColumn;
     @FXML
@@ -66,7 +74,7 @@ public class DealerOverviewController {
          showDealerDetails(null);
 
          // Listen for selection changes and show the person details when changed.
-         personTable.getSelectionModel().selectedItemProperty().addListener(
+         dealerTable.getSelectionModel().selectedItemProperty().addListener(
                  (observable, oldValue, newValue) -> showDealerDetails(newValue));
      }
 
@@ -79,7 +87,7 @@ public class DealerOverviewController {
         this.mainApp = mainApp;
 
         // Add observable list data to the table
-        personTable.setItems(mainApp.getDealerData());
+        dealerTable.setItems(mainApp.getDealerData());
     }
     /**
  * Fills all text fields to show details about the person.
@@ -105,9 +113,9 @@ public class DealerOverviewController {
     
     @FXML
     private void handleDeleteDealer() {
-    int selectedIndex = personTable.getSelectionModel().getSelectedIndex();
+    int selectedIndex = dealerTable.getSelectionModel().getSelectedIndex();
     if (selectedIndex >= 0) {
-        personTable.getItems().remove(selectedIndex);
+        dealerTable.getItems().remove(selectedIndex);
     } else {
         // Nothing selected.
        Alert alert = new Alert(AlertType.WARNING);
@@ -136,7 +144,7 @@ private void handleNewDealer() {
  */
 @FXML
 private void handleEditDealer() {
-    Dealer selectedDealer = personTable.getSelectionModel().getSelectedItem();
+    Dealer selectedDealer = dealerTable.getSelectionModel().getSelectedItem();
     if (selectedDealer != null) {
         boolean okClicked = mainApp.showDealerEditDialog(selectedDealer);
         if (okClicked) {
@@ -154,5 +162,42 @@ private void handleEditDealer() {
         alert.showAndWait();
     }
 }
+@FXML
+    private void exportarContratoPDF() throws FileNotFoundException, IOException {
 
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        Dealer e = (dealerTable.getSelectionModel().getSelectedItem());
+        if (e == null) {
+
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("No Seleccionó");
+            alert.setHeaderText(null);
+            alert.setContentText("Por favor seleccione una persona de la tabla.");
+            alert.showAndWait();
+        } else {
+            String nom = e.getFirstName();
+
+            try {
+                FileOutputStream archivo = new FileOutputStream("PDFS/Dealer"+ nom + ".pdf");
+                Document doc = new Document();
+
+                PdfWriter.getInstance(doc, archivo);
+                doc.open();
+                doc.add(new Paragraph(("Luis se la come 8===D")));
+                doc.close();
+                PdfWriter.getInstance(doc, archivo);
+            } catch (Exception a) {
+
+            }
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Fichero PDF creado con exito!");
+            alert.setHeaderText(null);
+            alert.setContentText("El archivo fue generado en la Ruta PDFS/Contratos");
+            alert.show();
+        }
+    }
+
+    
+    
 }

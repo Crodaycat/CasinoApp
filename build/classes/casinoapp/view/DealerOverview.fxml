@@ -18,7 +18,7 @@
          <items>
             <AnchorPane prefHeight="380.0" prefWidth="395.0">
                <children>
-                  <TableView fx:id="personTable" prefHeight="298.0" prefWidth="250.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TableView fx:id="dealerTable" prefHeight="298.0" prefWidth="250.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
                       <TableColumn fx:id="idColumn" prefWidth="58.0" text="ID" />
                       <TableColumn fx:id="firstNameColumn" prefWidth="138.0" text="First Name" />
@@ -71,6 +71,7 @@
                               <Button layoutX="315.0" layoutY="242.0" mnemonicParsing="false" onAction="#handleDeleteDealer" text="Delete" />
                            </children>
                         </HBox>
+                        <Button layoutX="54.0" layoutY="328.0" mnemonicParsing="false" onAction="#exportarContratoPDF" text="PDF" />
                      </children>
                   </Pane>
                </children>
