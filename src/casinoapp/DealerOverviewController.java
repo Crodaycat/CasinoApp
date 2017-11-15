@@ -36,15 +36,21 @@ public class DealerOverviewController {
     @FXML
     private TableColumn<Dealer, String> idColumn;
     @FXML
+    private TableColumn<Dealer, String> financialProfitColumn;
+    @FXML
     private Label idLabel;
     @FXML
     private Label firstNameLabel;
     @FXML
     private Label lastNameLabel;
-   
     @FXML
     private Label dateLabel;
-
+    @FXML
+    private Label workedHoursLabel;
+    @FXML
+    private Label financialProfitLabel;
+    @FXML
+    private Label baseMoneyLabel;
     // Reference to the main application.
     private MainApp mainApp;
 
@@ -68,6 +74,8 @@ public class DealerOverviewController {
                  cellData -> cellData.getValue().firstNameProperty());
          lastNameColumn.setCellValueFactory(
                  cellData -> cellData.getValue().lastNameProperty());
+         financialProfitColumn.setCellValueFactory(
+                 cellData -> cellData.getValue().FinancialProfitProperty());
         
 
          // Clear person details.
@@ -95,19 +103,26 @@ public class DealerOverviewController {
  * 
  * @param person the person or null
  */
-    private void showDealerDetails(Person person) {
-    if (person != null) {
+    private void showDealerDetails(Dealer dealer) {
+    if (dealer!= null) {
         // Fill the labels with info from the person object.
-        idLabel.setText(person.getId());
-        firstNameLabel.setText(person.getFirstName());
-        lastNameLabel.setText(person.getLastName());
-        dateLabel.setText(DateUtil.format(person.getDate()));
+        idLabel.setText(dealer.getId());
+        firstNameLabel.setText(dealer.getFirstName());
+        lastNameLabel.setText(dealer.getLastName());
+        dateLabel.setText(DateUtil.format(dealer.getDate()));
+        workedHoursLabel.setText(String.valueOf(dealer.getWorkedhours()));
+        baseMoneyLabel.setText(String.valueOf(dealer.getBaseMoney()));
+        financialProfitLabel.setText(String.valueOf(dealer.getFinancialProfit()));
+        
     } else {
         // Person is null, remove all the text.
         idLabel.setText("");
         firstNameLabel.setText("");
         lastNameLabel.setText("");
         dateLabel.setText("");
+        workedHoursLabel.setText("");
+        baseMoneyLabel.setText("");
+        financialProfitLabel.setText("");
     }
    }
     

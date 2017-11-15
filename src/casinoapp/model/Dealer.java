@@ -24,15 +24,16 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class Dealer extends Person{
     private final FloatProperty baseMoney; 
     private final FloatProperty workedhours; 
-    private final FloatProperty moneyIn; 
-    private final FloatProperty moneyOut; 
+    private final StringProperty financialProfit; 
+    final float hourWorkedPrice=30000;
+    
 
     public Dealer(float baseMoney, float workedhours, String firstName, String lastName, String id) {
         super(firstName, lastName, id);
         this.baseMoney = new SimpleFloatProperty(baseMoney);
         this.workedhours = new SimpleFloatProperty(workedhours);
-        this.moneyIn = new SimpleFloatProperty(0);
-        this.moneyOut = new SimpleFloatProperty(0);
+        this.financialProfit = new SimpleStringProperty("0");
+     
     }
 
     public Dealer() {
@@ -47,14 +48,11 @@ public class Dealer extends Person{
         return workedhours;
     }
 
-    public FloatProperty MoneyInProperty() {
-        return moneyIn;
+    public StringProperty FinancialProfitProperty() {
+        return financialProfit;
     }
 
-    public FloatProperty MoneyOutProperty() {
-        return moneyOut;
-    }
-
+    
     public float getBaseMoney() {
         return baseMoney.get();
     }
@@ -63,13 +61,11 @@ public class Dealer extends Person{
         return workedhours.get();
     }
 
-    public float  getMoneyIn() {
-        return moneyIn.get();
+    public String getFinancialProfit() {
+        return financialProfit.get();
     }
 
-    public float  getMoneyOut() {
-        return moneyOut.get();
-    }
+    
     public void setBaseMoney(float baseMoney) {
         this.baseMoney.set(baseMoney);
     }
@@ -78,17 +74,10 @@ public class Dealer extends Person{
         this.workedhours.set(workedHours);
     }
 
-    public void  setMoneyIn(float moneyIn) {
-        this.moneyIn.set(moneyIn);
+    public void  setFinancialProfit(String financialProfit) {
+        this.financialProfit.set(financialProfit);
     }
 
-    public void setMoneyOut(float moneyOut) {
-        this.moneyOut.set(moneyOut);
-    }
-
-    
-
- 
-    
+   
   
 }
