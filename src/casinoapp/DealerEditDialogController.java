@@ -49,7 +49,7 @@ public class DealerEditDialogController {
     private TextField inMoneyPoker;
     @FXML
     private TextField margingProfitBlackjack;
-        
+    
     
 
 
@@ -88,6 +88,7 @@ public class DealerEditDialogController {
         dateField.setText(DateUtil.format(dealer.getDate()));
         dateField.setPromptText("dd.mm.yyyy");
         baseMoneyField.setText(String.valueOf(dealer.getBaseMoney()));
+        workedHoursField.setText(String.valueOf(dealer.getWorkedhours()));
     }
 
     /**
@@ -108,7 +109,10 @@ public class DealerEditDialogController {
             dealer.setFirstName(firstNameField.getText());
             dealer.setLastName(lastNameField.getText());
             dealer.setDate(DateUtil.parse(dateField.getText()));
-
+            dealer.setBaseMoney(Float.parseFloat(baseMoneyField.getText()));
+            dealer.setWorkedhours(Float.parseFloat(workedHoursField.getText()));
+            makeBalance();
+            
             okClicked = true;
             dialogStage.close();
         }
