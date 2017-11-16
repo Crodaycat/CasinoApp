@@ -72,6 +72,9 @@ public class Person {
     public String getId() {
         return id.get();
     }
+    public void setId(String id) {
+        this.id.set(id);
+    }
 
     public void setLastName(String lastName) {
         this.lastName.set(lastName);

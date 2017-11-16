@@ -106,6 +106,7 @@ public class DealerEditDialogController {
     @FXML
     private void handleOk() {
         if (isInputValid()) {
+            dealer.setId(idField.getText());
             dealer.setFirstName(firstNameField.getText());
             dealer.setLastName(lastNameField.getText());
             dealer.setDate(DateUtil.parse(dateField.getText()));

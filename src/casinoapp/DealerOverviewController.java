@@ -178,7 +178,7 @@ private void handleEditDealer() {
     }
 }
 @FXML
-    private void exportarContratoPDF() throws FileNotFoundException, IOException {
+    private void exportarPDF() throws FileNotFoundException, IOException {
 
         FileWriter fichero = null;
         PrintWriter pw = null;
@@ -191,24 +191,27 @@ private void handleEditDealer() {
             alert.setContentText("Por favor seleccione una persona de la tabla.");
             alert.showAndWait();
         } else {
-            String nom = e.getFirstName();
+            String nom = e.getId()+e.getLastName()+e.getFirstName()+e.getDate();
 
             try {
-                FileOutputStream archivo = new FileOutputStream("PDFS/Dealer"+ nom + ".pdf");
+                FileOutputStream archivo = new FileOutputStream("PDF/Dealer"+ nom + ".pdf");
                 Document doc = new Document();
 
                 PdfWriter.getInstance(doc, archivo);
                 doc.open();
-                doc.add(new Paragraph(("Luis se la come 8===D")));
+                doc.add(new Paragraph(e.getId()+"\n"+e.getFirstName()+" "+e.getLastName()+"\n"
+                +"Worked Hours paid to 30.000: "+e.getWorkedhours()+"\n"+"Day worked: "+e.getDate()+"\n"+"Base money for work was: "+
+                        e.getBaseMoney()+"\n"+"Financial profit(net profit for the casino): "+e.getFinancialProfit()));
                 doc.close();
                 PdfWriter.getInstance(doc, archivo);
             } catch (Exception a) {
 
             }
+            String tmp="El archivo fue generado en la Ruta PDF/Dealers"+nom+".pdf";
             Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Fichero PDF creado con exito!");
+            alert.setTitle("Fichero PDF creado con exito");
             alert.setHeaderText(null);
-            alert.setContentText("El archivo fue generado en la Ruta PDFS/Contratos");
+            alert.setContentText(tmp);
             alert.show();
         }
     }
