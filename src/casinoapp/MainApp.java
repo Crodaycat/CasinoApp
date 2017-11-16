@@ -67,6 +67,7 @@ public class MainApp extends Application {
         initRootLayout();
         
         showDealerOverview(rootLayoutController.getDealerTab());
+        showMachineOverview(rootLayoutController.getMachineTab());
     }
 
     /**
@@ -107,7 +108,7 @@ public void initRootLayout() {
     /**
      * Shows the person overview inside the root layout.
      */
-    public void showDealerOverview(Tab tab) {
+public void showDealerOverview(Tab tab) {
     try {
         // Load person overview.
         FXMLLoader loader = new FXMLLoader();
@@ -121,6 +122,22 @@ public void initRootLayout() {
         DealerOverviewController controller = loader.getController();
         controller.setMainApp(this);
 
+    } catch (IOException e) {
+        e.printStackTrace();
+    }  
+}
+
+public void showMachineOverview (Tab tab) {
+    try {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("view/MachineOverview.fxml"));
+        AnchorPane machineOverview = (AnchorPane) loader.load();
+        
+        tab.setContent(machineOverview);
+        
+        MachineOverviewController controller = loader.getController();
+        controller.setMainApp(this);
+        
     } catch (IOException e) {
         e.printStackTrace();
     }

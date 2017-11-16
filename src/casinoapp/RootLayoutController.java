@@ -140,7 +140,7 @@ public class RootLayoutController {
         return dealerTab;
     }
 
-    public Tab getMachinesTab() {
+    public Tab getMachineTab() {
         return machinesTab;
     }
 }
