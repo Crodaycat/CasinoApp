@@ -25,16 +25,16 @@ public class Machine {
         return serie.get();
     }
 
-    public void setSerie(StringProperty serie) {
-        this.serie = serie;
+    public void setSerie(String serie) {
+        this.serie.set(serie);
     }
 
     public String getType() {
         return type.get();
     }
 
-    public void setType(StringProperty type) {
-        this.type = type;
+    public void setType(String type) {
+        this.type.set(type);
     }
     
     public StringProperty getSerieProperty() {
