@@ -199,7 +199,9 @@ public class MachineOverviewController {
         this.mainApp = mainApp;
 
         // Add observable list data to the table
-        //machineType.setItems(mainApp.getMachineData());
+        machinesTable.setItems(mainApp.getMachineData());
+        awardsTable.setItems(mainApp.getAwardData());
+        gameHistoryTable.setItems(mainApp.getGameHistoryData());
     }
     
     private void showMachineDatails (Machine machine) {

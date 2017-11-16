@@ -48,7 +48,7 @@ public class MainApp extends Application {
      * Constructor
      */
     public MainApp() {
-        machineData.add(new Machine("01", "01"));
+        machineData.add(new Machine("01", "02"));
     }
 
     /**
@@ -118,10 +118,10 @@ public void initRootLayout() {
     if (file != null) {
         loadDealerDataFromFile(file);
     }
-    /*File fileMachine = getMachineFilePath();
+    File fileMachine = getMachineFilePath();
     if (fileMachine != null) {
         loadDataFromFileMachine(fileMachine);
-    }*/
+    }
     File fileAward = getAwardFilePath();
     if (fileAward != null) {
         loadDataFromFileAward(fileAward);
@@ -279,7 +279,7 @@ public File getDealerFilePath() {
     }
 }
 
-/*public File getMachineFilePath() {
+public File getMachineFilePath() {
     Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
     String filePath = prefs.get("filePathMachine", null);
     if (filePath != null) {
@@ -287,7 +287,7 @@ public File getDealerFilePath() {
     } else {
         return null;
     }
-}*/
+}
 
 public File getAwardFilePath() {
     Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
@@ -330,7 +330,7 @@ public void setDealerFilePath(File file) {
     }
 }
 
-/*public void setMachineFilePath(File file) {
+public void setMachineFilePath(File file) {
     Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
     if (file != null) {
         prefs.put("filePathMachine", file.getPath());
@@ -343,7 +343,7 @@ public void setDealerFilePath(File file) {
         // Update the stage title.
         primaryStage.setTitle("CasinoApp");
     }
-}*/
+}
 
 public void setAwardFilePath(File file) {
     Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
@@ -406,7 +406,7 @@ public void loadDealerDataFromFile(File file) {
     }
 }
 
-/*public void loadDataFromFileMachine (File file) {
+public void loadDataFromFileMachine (File file) {
     try {
         JAXBContext context = JAXBContext
                 .newInstance(MachineListWrapper.class);
@@ -431,7 +431,7 @@ public void loadDealerDataFromFile(File file) {
         
         alert.showAndWait();
     }
-}*/
+}
 
 public void loadDataFromFileAward (File file) {
     try {
