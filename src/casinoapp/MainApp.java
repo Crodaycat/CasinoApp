@@ -7,8 +7,7 @@ package casinoapp;
  */
 
 
-import casinoapp.model.Dealer;
-import casinoapp.model.DealerAndMachineListWrapper;
+import casinoapp.model.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.prefs.Preferences;
@@ -40,6 +39,9 @@ public class MainApp extends Application {
     private RootLayoutController rootLayoutController;
     
     private ObservableList<Dealer> dealerData = FXCollections.observableArrayList();
+    private ObservableList<Machine> machineData = FXCollections.observableArrayList();
+    private ObservableList<Award> awardData = FXCollections.observableArrayList();
+    private ObservableList<GameHistory> gameHistoryData = FXCollections.observableArrayList();
 
     /**
      * Constructor
@@ -56,6 +58,19 @@ public class MainApp extends Application {
     public ObservableList<Dealer> getDealerData() {
         return dealerData;
     }
+    
+    public ObservableList<Machine> getMachineData() {
+        return machineData;
+    }
+    
+    public ObservableList<Award> getAwardData() {
+        return awardData;
+    }
+    
+    public ObservableList<GameHistory> getGameHistoryData() {
+        return gameHistoryData;
+    }
+    
     
     @Override
     public void start(Stage primaryStage) {
@@ -101,7 +116,19 @@ public void initRootLayout() {
     // Try to load last opened person file.
     File file = getDealerFilePath();
     if (file != null) {
-        loadDealerDataFromFile(file);
+        loadDealerDataFromFileDealer(file);
+    }
+    file = getMachineFilePath();
+    if (file != null) {
+        loadDealerDataFromFileMachine(file);
+    }
+    file = getAwardFilePath();
+    if (file != null) {
+        loadDealerDataFromFileAward(file);
+    }
+    file = getGameHistoryFilePath();
+    if (file != null) {
+        loadDealerDataFromFileGameHistory(file);
     }
 }
 
@@ -161,7 +188,7 @@ public boolean showDealerEditDialog(Dealer dealer) {
         // Set the person into the controller.
         DealerEditDialogController controller = loader.getController();
         controller.setDialogStage(dialogStage);
-         controller.setDealer(dealer);
+        controller.setDealer(dealer);
 
         // Show the dialog and wait until the user closes it
         dialogStage.showAndWait();
@@ -179,9 +206,102 @@ public boolean showDealerEditDialog(Dealer dealer) {
  * 
  * @return
  */
+
+
+public boolean showMachineEditDialog(Machine machine) {
+    try {
+        // Load the fxml file and create a new stage for the popup dialog.
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("view/MachineEditDialog.fxml"));
+        AnchorPane page = (AnchorPane) loader.load();
+
+        // Create the dialog Stage.
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Edit Machine");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+
+        // Set the person into the controller.
+        MachineEditDialogController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
+        controller.setMachine(machine);
+
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
+
+        return controller.isOkClicked();
+    } catch (IOException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+public boolean showAwardEditDialog(Award award) {
+    try {
+        // Load the fxml file and create a new stage for the popup dialog.
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("view/AwardsEditDialog.fxml"));
+        AnchorPane page = (AnchorPane) loader.load();
+
+        // Create the dialog Stage.
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Edit Award");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+
+        // Set the person into the controller.
+        AwardsEditDialogController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
+        controller.setAward(award);
+
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
+
+        return controller.isOkClicked();
+    } catch (IOException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+
 public File getDealerFilePath() {
     Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
     String filePath = prefs.get("filePath", null);
+    if (filePath != null) {
+        return new File(filePath);
+    } else {
+        return null;
+    }
+}
+
+public File getMachineFilePath() {
+    Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+    String filePath = prefs.get("filePathMachine", null);
+    if (filePath != null) {
+        return new File(filePath);
+    } else {
+        return null;
+    }
+}
+
+public File getAwardFilePath() {
+    Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+    String filePath = prefs.get("filePathAward", null);
+    if (filePath != null) {
+        return new File(filePath);
+    } else {
+        return null;
+    }
+}
+
+public File getGameHistoryFilePath() {
+    Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+    String filePath = prefs.get("filePathGameHistory", null);
     if (filePath != null) {
         return new File(filePath);
     } else {
@@ -198,12 +318,42 @@ public File getDealerFilePath() {
 public void setDealerFilePath(File file) {
     Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
     if (file != null) {
-        prefs.put("filePath", file.getPath());
+        prefs.put("filePathMachine", file.getPath());
 
         // Update the stage title.
         primaryStage.setTitle("CasinoApp - " + file.getName());
     } else {
-        prefs.remove("filePath");
+        prefs.remove("filePathMachine");
+
+        // Update the stage title.
+        primaryStage.setTitle("CasinoApp");
+    }
+}
+
+public void setAwardFilePath(File file) {
+    Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+    if (file != null) {
+        prefs.put("filePathAward", file.getPath());
+
+        // Update the stage title.
+        primaryStage.setTitle("CasinoApp - " + file.getName());
+    } else {
+        prefs.remove("filePathAward");
+
+        // Update the stage title.
+        primaryStage.setTitle("CasinoApp");
+    }
+}
+
+public void setGameHistoryFilePath(File file) {
+    Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+    if (file != null) {
+        prefs.put("filePathGameHistory", file.getPath());
+
+        // Update the stage title.
+        primaryStage.setTitle("CasinoApp - " + file.getName());
+    } else {
+        prefs.remove("filePathGameHistory");
 
         // Update the stage title.
         primaryStage.setTitle("CasinoApp");
@@ -216,17 +366,92 @@ public void setDealerFilePath(File file) {
  * 
  * @param file
  */
-public void loadDealerDataFromFile(File file) {
+public void loadDealerDataFromFileDealer(File file) {
     try {
         JAXBContext context = JAXBContext
-                .newInstance(DealerAndMachineListWrapper.class);
+                .newInstance(DealerListWrapper.class);
         Unmarshaller um = context.createUnmarshaller();
 
         // Reading XML from the file and unmarshalling.
-        DealerAndMachineListWrapper wrapper = (DealerAndMachineListWrapper) um.unmarshal(file);
+        DealerListWrapper wrapper = (DealerListWrapper) um.unmarshal(file);
 
         dealerData.clear();
         dealerData.addAll(wrapper.getDealers());
+
+        // Save the file path to the registry.
+        setDealerFilePath(file);
+
+    } catch (Exception e) { // catches ANY exception
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Could not load data");
+        alert.setContentText("Could not load data from file:\n" + file.getPath());
+
+        alert.showAndWait();
+    }
+}
+
+public void loadDealerDataFromFileMachine (File file) {
+    try {
+        JAXBContext context = JAXBContext
+                .newInstance(MachineListWrapper.class);
+        Unmarshaller um = context.createUnmarshaller();
+
+        // Reading XML from the file and unmarshalling.
+        MachineListWrapper wrapper = (MachineListWrapper) um.unmarshal(file);
+
+        machineData.clear();
+        machineData.addAll(wrapper.getMachine());
+
+        // Save the file path to the registry.
+        setDealerFilePath(file);
+
+    } catch (Exception e) { // catches ANY exception
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Could not load data");
+        alert.setContentText("Could not load data from file:\n" + file.getPath());
+
+        alert.showAndWait();
+    }
+}
+
+public void loadDealerDataFromFileAward (File file) {
+    try {
+        JAXBContext context = JAXBContext
+                .newInstance(AwardListWrapper.class);
+        Unmarshaller um = context.createUnmarshaller();
+
+        // Reading XML from the file and unmarshalling.
+        AwardListWrapper wrapper = (AwardListWrapper) um.unmarshal(file);
+
+        awardData.clear();
+        awardData.addAll(wrapper.getAward());
+
+        // Save the file path to the registry.
+        setDealerFilePath(file);
+
+    } catch (Exception e) { // catches ANY exception
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Could not load data");
+        alert.setContentText("Could not load data from file:\n" + file.getPath());
+
+        alert.showAndWait();
+    }
+}
+
+public void loadDealerDataFromFileGameHistory (File file) {
+    try {
+        JAXBContext context = JAXBContext
+                .newInstance(GameHistoryListWrapper.class);
+        Unmarshaller um = context.createUnmarshaller();
+
+        // Reading XML from the file and unmarshalling.
+        GameHistoryListWrapper wrapper = (GameHistoryListWrapper) um.unmarshal(file);
+
+        gameHistoryData.clear();
+        gameHistoryData.addAll(wrapper.getGameHistory());
 
         // Save the file path to the registry.
         setDealerFilePath(file);
@@ -248,12 +473,12 @@ public void loadDealerDataFromFile(File file) {
  */
 public void saveDealerDataToFile(File file) {
     try {
-        JAXBContext context = JAXBContext.newInstance(DealerAndMachineListWrapper.class);
+        JAXBContext context = JAXBContext.newInstance(DealerListWrapper.class);
         Marshaller m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
         // Wrapping our person data.
-        DealerAndMachineListWrapper wrapper = new DealerAndMachineListWrapper();
+        DealerListWrapper wrapper = new DealerListWrapper();
         wrapper.setDealers(dealerData);
 
         // Marshalling and saving XML to the file.

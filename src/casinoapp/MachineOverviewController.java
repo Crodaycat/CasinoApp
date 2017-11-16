@@ -8,6 +8,7 @@ package casinoapp;
 import casinoapp.model.Award;
 import casinoapp.model.GameHistory;
 import casinoapp.model.Machine;
+import casinoapp.util.DateUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -16,6 +17,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import java.time.LocalDate;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  * FXML Controller class
@@ -61,7 +65,7 @@ public class MachineOverviewController {
     @FXML
     private TableColumn<GameHistory, String> gameMoneyCollected;
     @FXML
-    private TableColumn<GameHistory, String> gameAwardDate;
+    private TableColumn<GameHistory, LocalDate> gameAwardDate;
     @FXML
     private TableColumn<GameHistory, String> gameAwardPrice;
     @FXML
@@ -84,18 +88,55 @@ public class MachineOverviewController {
         initializeMachineTable();
         initializeAwardTable();
         initializeGameHistoryTable();
+        
+        machinesTable.setItems(mainApp.getMachineData());
+        awardsTable.setItems(mainApp.getAwardData());
+        gameHistoryTable.setItems(mainApp.getGameHistoryData());
     }    
 
     @FXML
     private void handleNewMachine(ActionEvent event) {
+        Machine tempMachine = new Machine();
+        boolean okClicked = mainApp.showMachineEditDialog(tempMachine);
+        if (okClicked) {
+            mainApp.getMachineData().add(tempMachine);
+        }
     }
 
     @FXML
     private void handleEditMachine(ActionEvent event) {
+        Machine selectedMachine = machinesTable.getSelectionModel().getSelectedItem();
+        if (selectedMachine != null) {
+            boolean okClicked = mainApp.showMachineEditDialog(selectedMachine);
+            if (okClicked) {
+                showMachineDatails(selectedMachine);
+            }
+
+        } else {
+            // Nothing selected.
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.initOwner(mainApp.getPrimaryStage());
+            alert.setTitle("No Selection");
+            alert.setHeaderText("No Machine Selected");
+            alert.setContentText("Please select a Machine in the table.");
+
+            alert.showAndWait();
+        }
     }
 
     @FXML
     private void handleDeleteMachine(ActionEvent event) {
+        int selectedIndex = machinesTable.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            machinesTable.getItems().remove(selectedIndex);
+        } else {
+            // Nothing selected.
+           Alert alert = new Alert(Alert.AlertType.WARNING);
+           alert.setTitle("No Selection");
+           alert.setHeaderText(null);
+           alert.setContentText("Please select a Machine in the table.");
+           alert.showAndWait();
+        }
     }
 
     @FXML
@@ -103,15 +144,44 @@ public class MachineOverviewController {
     }
 
     @FXML
-    private void handleNewAward(ActionEvent event) {
+    private void handleNewAward() {
+        
     }
 
     @FXML
-    private void handleEditAward(ActionEvent event) {
+    private void handleEditAward() {
+        Award selectedAward = awardsTable.getSelectionModel().getSelectedItem();
+        if (selectedAward != null) {
+            boolean okClicked = mainApp.showAwardEditDialog(selectedAward);
+            if (okClicked) {
+                showAwardDatails(selectedAward);
+            }
+
+        } else {
+            // Nothing selected.
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.initOwner(mainApp.getPrimaryStage());
+            alert.setTitle("No Selection");
+            alert.setHeaderText("No Machine Selected");
+            alert.setContentText("Please select a Machine in the table.");
+
+            alert.showAndWait();
+        }
     }
 
     @FXML
-    private void handleDeleteAward(ActionEvent event) {
+    private void handleDeleteAward() {
+        int selectedIndex = awardsTable.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            awardsTable.getItems().remove(selectedIndex);
+        } else {
+            // Nothing selected.
+           Alert alert = new Alert(Alert.AlertType.WARNING);
+           alert.setTitle("No Selection");
+           alert.setHeaderText(null);
+           alert.setContentText("Please select a Award in the table.");
+           alert.showAndWait();
+        }
     }
     
     public void setMainApp(MainApp mainApp) {
@@ -151,7 +221,7 @@ public class MachineOverviewController {
             gameMachineLabel.setText(gameHistory.getMachineSerie());
             gameMoneyLabel.setText(String.valueOf(gameHistory.getMoneyCollected()));
             gameAwardLabel.setText(gameHistory.getAwardId());
-            gameDateLabel.setText(gameHistory.getAwardDate());
+            gameDateLabel.setText(DateUtil.format(gameHistory.getAwardDate()));
             gamePriceLabel.setText(gameHistory.getAwardPrice());
         } else {
             gameMachineLabel.setText("");

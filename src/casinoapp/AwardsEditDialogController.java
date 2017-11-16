@@ -47,7 +47,7 @@ public class AwardsEditDialogController {
         this.dialogStage = dialogStage;
     }
     
-    public void setMachine(Award award) {
+    public void setAward(Award award) {
         this.award = award;
         
         txtId.setText(award.getAwardId());

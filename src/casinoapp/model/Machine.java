@@ -21,6 +21,11 @@ public class Machine {
         this.type = new SimpleStringProperty(type);
     }
 
+    public Machine() {
+        serie = null;
+        type = null;
+    }
+
     public String getSerie() {
         return serie.get();
     }

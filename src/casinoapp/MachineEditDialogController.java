@@ -39,7 +39,6 @@ public class MachineEditDialogController {
     public void initialize() {
         
     }    
-    
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
