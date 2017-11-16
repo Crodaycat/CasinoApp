@@ -89,9 +89,14 @@ public class MachineOverviewController {
         initializeAwardTable();
         initializeGameHistoryTable();
         
-        machinesTable.setItems(mainApp.getMachineData());
-        awardsTable.setItems(mainApp.getAwardData());
-        gameHistoryTable.setItems(mainApp.getGameHistoryData());
+        try {
+            machinesTable.setItems(mainApp.getMachineData());
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        
+        //awardsTable.setItems(mainApp.getAwardData());
+        //gameHistoryTable.setItems(mainApp.getGameHistoryData());
     }    
 
     @FXML
@@ -101,6 +106,7 @@ public class MachineOverviewController {
         if (okClicked) {
             mainApp.getMachineData().add(tempMachine);
         }
+        
     }
 
     @FXML
@@ -145,6 +151,11 @@ public class MachineOverviewController {
 
     @FXML
     private void handleNewAward() {
+        Award tempAward = new Award();
+        boolean okClicked = mainApp.showAwardEditDialog(tempAward);
+        if (okClicked) {
+            mainApp.getAwardData().add(tempAward);
+        }
         
     }
 

@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DealerListWrapper {
 
     private List<Dealer> dealers;
-    private List<Machine> machines;
 
     @XmlElement(name = "dealer")
     public List<Dealer> getDealers() {

@@ -26,6 +26,13 @@ public class Award {
         this.description = new SimpleStringProperty(description);
         this.price = new SimpleStringProperty(price);
     }
+    
+    public Award () {
+        awardId = new SimpleStringProperty(null);
+        machineType = new SimpleStringProperty(null);
+        description = new SimpleStringProperty(null);
+        price = new SimpleStringProperty(null);
+    }
 
     public StringProperty getAwardIdProperty() {
         return awardId;

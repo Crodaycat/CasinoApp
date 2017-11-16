@@ -77,7 +77,4 @@ public class Dealer extends Person{
     public void  setFinancialProfit(String financialProfit) {
         this.financialProfit.set(financialProfit);
     }
-
-   
-  
 }

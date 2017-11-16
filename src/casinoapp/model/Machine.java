@@ -13,8 +13,8 @@ import javafx.beans.property.StringProperty;
  * @author luis.giraldo10
  */
 public class Machine {
-    private StringProperty serie;
-    private StringProperty type;
+    private final StringProperty serie;
+    private final StringProperty type;
 
     public Machine(String serie, String type) {
         this.serie = new SimpleStringProperty(serie);
@@ -22,8 +22,8 @@ public class Machine {
     }
 
     public Machine() {
-        serie = null;
-        type = null;
+        serie = new SimpleStringProperty(null);
+        type = new SimpleStringProperty(null);
     }
 
     public String getSerie() {

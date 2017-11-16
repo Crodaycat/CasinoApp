@@ -29,6 +29,7 @@ import javafx.stage.Stage;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import static jdk.nashorn.internal.objects.NativeError.printStackTrace;
 
 
 
@@ -47,8 +48,7 @@ public class MainApp extends Application {
      * Constructor
      */
     public MainApp() {
-        // Add some sample data
-       
+        machineData.add(new Machine("01", "01"));
     }
 
     /**
@@ -116,19 +116,19 @@ public void initRootLayout() {
     // Try to load last opened person file.
     File file = getDealerFilePath();
     if (file != null) {
-        loadDealerDataFromFileDealer(file);
+        loadDealerDataFromFile(file);
     }
-    file = getMachineFilePath();
-    if (file != null) {
-        loadDealerDataFromFileMachine(file);
+    /*File fileMachine = getMachineFilePath();
+    if (fileMachine != null) {
+        loadDataFromFileMachine(fileMachine);
+    }*/
+    File fileAward = getAwardFilePath();
+    if (fileAward != null) {
+        loadDataFromFileAward(fileAward);
     }
-    file = getAwardFilePath();
-    if (file != null) {
-        loadDealerDataFromFileAward(file);
-    }
-    file = getGameHistoryFilePath();
-    if (file != null) {
-        loadDealerDataFromFileGameHistory(file);
+    File fileGameHistory = getGameHistoryFilePath();
+    if (fileGameHistory != null) {
+        loadDataFromFileGameHistory(fileGameHistory);
     }
 }
 
@@ -279,7 +279,7 @@ public File getDealerFilePath() {
     }
 }
 
-public File getMachineFilePath() {
+/*public File getMachineFilePath() {
     Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
     String filePath = prefs.get("filePathMachine", null);
     if (filePath != null) {
@@ -287,7 +287,7 @@ public File getMachineFilePath() {
     } else {
         return null;
     }
-}
+}*/
 
 public File getAwardFilePath() {
     Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
@@ -318,6 +318,21 @@ public File getGameHistoryFilePath() {
 public void setDealerFilePath(File file) {
     Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
     if (file != null) {
+        prefs.put("filePath", file.getPath());
+
+        // Update the stage title.
+        primaryStage.setTitle("CasinoApp - " + file.getName());
+    } else {
+        prefs.remove("filePath");
+
+        // Update the stage title.
+        primaryStage.setTitle("CasinoApp");
+    }
+}
+
+/*public void setMachineFilePath(File file) {
+    Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+    if (file != null) {
         prefs.put("filePathMachine", file.getPath());
 
         // Update the stage title.
@@ -328,7 +343,7 @@ public void setDealerFilePath(File file) {
         // Update the stage title.
         primaryStage.setTitle("CasinoApp");
     }
-}
+}*/
 
 public void setAwardFilePath(File file) {
     Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
@@ -366,7 +381,7 @@ public void setGameHistoryFilePath(File file) {
  * 
  * @param file
  */
-public void loadDealerDataFromFileDealer(File file) {
+public void loadDealerDataFromFile(File file) {
     try {
         JAXBContext context = JAXBContext
                 .newInstance(DealerListWrapper.class);
@@ -384,14 +399,14 @@ public void loadDealerDataFromFileDealer(File file) {
     } catch (Exception e) { // catches ANY exception
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error");
-        alert.setHeaderText("Could not load data");
+        alert.setHeaderText("Could not load Dealers data");
         alert.setContentText("Could not load data from file:\n" + file.getPath());
-
+        System.out.println(e.toString());
         alert.showAndWait();
     }
 }
 
-public void loadDealerDataFromFileMachine (File file) {
+/*public void loadDataFromFileMachine (File file) {
     try {
         JAXBContext context = JAXBContext
                 .newInstance(MachineListWrapper.class);
@@ -409,14 +424,16 @@ public void loadDealerDataFromFileMachine (File file) {
     } catch (Exception e) { // catches ANY exception
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error");
-        alert.setHeaderText("Could not load data");
+        alert.setHeaderText("Could not load Machines data");
         alert.setContentText("Could not load data from file:\n" + file.getPath());
-
+        
+        System.out.println(e.toString());
+        
         alert.showAndWait();
     }
-}
+}*/
 
-public void loadDealerDataFromFileAward (File file) {
+public void loadDataFromFileAward (File file) {
     try {
         JAXBContext context = JAXBContext
                 .newInstance(AwardListWrapper.class);
@@ -434,14 +451,14 @@ public void loadDealerDataFromFileAward (File file) {
     } catch (Exception e) { // catches ANY exception
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error");
-        alert.setHeaderText("Could not load data");
+        alert.setHeaderText("Could not load Awards data");
         alert.setContentText("Could not load data from file:\n" + file.getPath());
-
+        System.out.println(e.toString());
         alert.showAndWait();
     }
 }
 
-public void loadDealerDataFromFileGameHistory (File file) {
+public void loadDataFromFileGameHistory (File file) {
     try {
         JAXBContext context = JAXBContext
                 .newInstance(GameHistoryListWrapper.class);
@@ -459,7 +476,7 @@ public void loadDealerDataFromFileGameHistory (File file) {
     } catch (Exception e) { // catches ANY exception
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error");
-        alert.setHeaderText("Could not load data");
+        alert.setHeaderText("Could not load GameHistory data");
         alert.setContentText("Could not load data from file:\n" + file.getPath());
 
         alert.showAndWait();

@@ -18,12 +18,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class MachineListWrapper {
     private List<Machine> machines;
 
-    @XmlElement(name = "Machine")
+    @XmlElement(name = "machine")
     public List<Machine> getMachine() {
         return machines;
     }
     
-    public void setDealers(List<Machine> machines) {
+    public void setMachines(List<Machine> machines) {
         this.machines = machines;
     }
 }
