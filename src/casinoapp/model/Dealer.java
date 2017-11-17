@@ -12,7 +12,7 @@ import javafx.beans.property.StringProperty;
 
 /**
  *
- * @author Tatiana
+ * @author jcarolina.escobar
  */
 public class Dealer extends Person{
     private final FloatProperty baseMoney; 
