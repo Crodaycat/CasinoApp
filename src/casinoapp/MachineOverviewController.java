@@ -6,9 +6,20 @@
 package casinoapp;
 
 import casinoapp.model.Award;
+import casinoapp.model.Dealer;
 import casinoapp.model.GameHistory;
 import casinoapp.model.Machine;
 import casinoapp.util.DateUtil;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -18,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import java.time.LocalDate;
+import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -147,6 +159,134 @@ public class MachineOverviewController {
 
     @FXML
     private void handleExportPDF(ActionEvent event) {
+        Machine machine = machinesTable.getSelectionModel().getSelectedItem();
+        
+        if (machine != null) {
+            FilteredList<Award> machineAwards = filterAwardsByMachineSerie(machine.getType());
+            if (machineAwards.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("No history Found and no Awards Found");
+                alert.setHeaderText(null);
+                alert.setContentText("Please create awards for this machine Type.");
+                alert.showAndWait();
+            } else {
+                FilteredList<GameHistory> machineHistory = filterHistoriesByDateAndSerie(machine.getSerie(), LocalDate.now());
+                if (machineHistory.isEmpty()) {
+                    
+                } else {
+                    makePDF(machine, machineHistory, machineAwards);
+                }
+            }
+        } else {
+            // Nothing selected.
+           Alert alert = new Alert(Alert.AlertType.WARNING);
+           alert.setTitle("No Selection");
+           alert.setHeaderText(null);
+           alert.setContentText("Please select a Machine in the table.");
+           alert.showAndWait();
+        }
+    }
+    
+    private FilteredList<Award> filterAwardsByMachineSerie (String type) {
+        FilteredList<Award> filteredAwards = new FilteredList<>(mainApp.getAwardData(), award -> award.getMachineType().equals(award));
+        return filteredAwards;
+    }
+    
+    private FilteredList<GameHistory> filterHistoriesByDateAndSerie (String machineSerie, LocalDate date) {
+        FilteredList<GameHistory> filteredHistories = new FilteredList<>(mainApp.getGameHistoryData(), 
+                history -> history.getMachineSerie().equals(machineSerie) && history.getAwardDate().equals(date));
+        return filteredHistories;
+    }
+    
+    private FilteredList<GameHistory> makeHistory () {
+        return;
+    }
+    
+    private void makePDF (Machine machine, FilteredList<GameHistory> history, FilteredList<Award> awards) {
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        String nom = machine.getSerie()+"-"+machine.getType();
+        try {
+            FileOutputStream archivo = new FileOutputStream("PDF/Machine"+ nom + ".pdf");
+            Document doc = new Document();
+
+            PdfWriter.getInstance(doc, archivo);
+            doc.open();
+            
+            Paragraph titulo = new Paragraph();
+            titulo.setAlignment(Paragraph.ALIGN_CENTER);
+            titulo.setFont(FontFactory.getFont("Times New Roman", 24, Font.BOLD, BaseColor.RED));
+            titulo.add("INVENTARIO\n\n");
+            titulo.add("Maquína con número de serie " + machine.getSerie()+"\n");
+            titulo.add("Tipo " + machine.getType() + "\n");
+            titulo.add(LocalDate.now().toString() + "\n\n");
+            
+            try {
+                doc.add(titulo);
+                
+            } catch (Exception e) {
+            }
+            
+            
+            //Set table column number, width of the table and width of each column
+            PdfPTable table = new PdfPTable(4); 
+            table.setWidthPercentage(100);
+            table.setWidths(new float[] {40, 20, 20, 20});
+            
+            Paragraph column = new Paragraph("Descripción");
+            column.getFont().setStyle(Font.BOLD);
+            column.getFont().setSize(10);
+            table.addCell(column);
+            
+            column = new Paragraph("Dinero adquirido");
+            column.getFont().setStyle(Font.BOLD);
+            column.getFont().setSize(10);
+            table.addCell(column);
+            
+            column = new Paragraph("Valor del premio");
+            column.getFont().setStyle(Font.BOLD);
+            column.getFont().setSize(10);
+            table.addCell(column);
+            
+            column = new Paragraph("Subtotal");
+            column.getFont().setStyle(Font.BOLD);
+            column.getFont().setSize(10);
+            table.addCell(column);
+            
+            double total = 0;
+            for (GameHistory award : history) {
+                FilteredList<Award> awardInfo = new FilteredList<> (awards, item -> item.getAwardId().equals(award.getAwardId()));
+                table.addCell(new Paragraph(awardInfo.get(0).getDescription()));
+                float collected = Float.parseFloat(award.getMoneyCollected());
+                float price = Float.parseFloat(award.getAwardPrice());
+                float subtotal = collected - price;
+                total += subtotal;
+                table.addCell(new Paragraph(String.valueOf(collected)));
+                table.addCell(new Paragraph(String.valueOf(price)));
+                table.addCell(new Paragraph(String.valueOf(subtotal)));
+            }
+            
+            table.addCell(new Paragraph(""));
+            table.addCell(new Paragraph(""));
+            column = new Paragraph("Total:");
+            column.getFont().setStyle(Font.BOLD);
+            column.getFont().setSize(10);
+            table.addCell(column);
+            table.addCell(new Paragraph(String.valueOf(total)));
+            
+            doc.add(table);
+            
+            doc.close();
+            PdfWriter.getInstance(doc, archivo);
+        } catch (Exception a) {
+
+        }
+        String tmp="El archivo fue generado en la Ruta PDF/Machine"+nom+".pdf";
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Fichero PDF creado con exito");
+        alert.setHeaderText(null);
+        alert.setContentText(tmp);
+        alert.show();
     }
 
     @FXML
