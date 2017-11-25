@@ -10,6 +10,7 @@ import casinoapp.model.Dealer;
 import casinoapp.model.GameHistory;
 import casinoapp.model.Machine;
 import casinoapp.util.DateUtil;
+import casinoapp.util.LocalDateAdapter;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
@@ -29,6 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import java.time.LocalDate;
+import java.util.Random;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -162,17 +164,17 @@ public class MachineOverviewController {
         Machine machine = machinesTable.getSelectionModel().getSelectedItem();
         
         if (machine != null) {
-            FilteredList<Award> machineAwards = filterAwardsByMachineSerie(machine.getType());
+            FilteredList<Award> machineAwards = filterAwardsByMachineType(machine.getType());
             if (machineAwards.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("No history Found and no Awards Found");
+                alert.setTitle("No Awards Found for this machine Type");
                 alert.setHeaderText(null);
                 alert.setContentText("Please create awards for this machine Type.");
                 alert.showAndWait();
             } else {
                 FilteredList<GameHistory> machineHistory = filterHistoriesByDateAndSerie(machine.getSerie(), LocalDate.now());
                 if (machineHistory.isEmpty()) {
-                    
+                    makeHistory();
                 } else {
                     makePDF(machine, machineHistory, machineAwards);
                 }
@@ -187,8 +189,8 @@ public class MachineOverviewController {
         }
     }
     
-    private FilteredList<Award> filterAwardsByMachineSerie (String type) {
-        FilteredList<Award> filteredAwards = new FilteredList<>(mainApp.getAwardData(), award -> award.getMachineType().equals(award));
+    private FilteredList<Award> filterAwardsByMachineType (String type) {
+        FilteredList<Award> filteredAwards = new FilteredList<>(mainApp.getAwardData(), award -> award.getMachineType().equals(type));
         return filteredAwards;
     }
     
@@ -198,8 +200,16 @@ public class MachineOverviewController {
         return filteredHistories;
     }
     
-    private FilteredList<GameHistory> makeHistory () {
-        return;
+    private FilteredList<GameHistory> makeHistory (Machine machine, FilteredList<Award> awards) {
+        Random randomGenerator = new Random();
+        int awardsRate = randomGenerator.nextInt(6) + 95;
+        LocalDate today = LocalDate.now();
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Date");
+        alert.setHeaderText(null);
+        alert.setContentText(today.toString());
+        alert.showAndWait();
+        return null;
     }
     
     private void makePDF (Machine machine, FilteredList<GameHistory> history, FilteredList<Award> awards) {
