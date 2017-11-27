@@ -22,7 +22,7 @@ public class AwardListWrapper {
         return awards;
     }
     
-    public void setDealers(List<Award> awards) {
+    public void setAwards(List<Award> awards) {
         this.awards = awards;
     }
 }

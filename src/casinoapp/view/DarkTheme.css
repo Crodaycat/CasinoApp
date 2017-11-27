@@ -88,7 +88,7 @@ and open the template in the editor.
 }
 
 .menu-bar .label {
-    -fx-font-size: 8pt;
+    -fx-font-size: 12pt;
     -fx-font-family: "Segoe UI Light";
     -fx-text-fill: white;
     -fx-opacity: 0.9;

@@ -22,7 +22,7 @@ public class GameHistoryListWrapper {
         return gameHistories;
     }
     
-    public void setDealers(List<GameHistory> gameHistories) {
+    public void setGameHistory(List<GameHistory> gameHistories) {
         this.gameHistories = gameHistories;
     }
 }

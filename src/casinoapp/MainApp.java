@@ -536,6 +536,54 @@ public void saveMachineDataToFile(File file) {
         alert.showAndWait();
     }
 }
+public void saveMachineAwardsDataToFile(File file) {
+    try {
+        JAXBContext context = JAXBContext.newInstance(AwardListWrapper.class);
+        Marshaller m = context.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        // Wrapping our person data.
+        AwardListWrapper wrapper = new AwardListWrapper();
+        wrapper.setAwards(awardData);
+
+        // Marshalling and saving XML to the file.
+        m.marshal(wrapper, file);
+
+        // Save the file path to the registry.
+        setMachineFilePath(file);
+    } catch (Exception e) { // catches ANY exception
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Could not save data");
+        alert.setContentText("Could not save data to file:\n" + file.getPath());
+
+        alert.showAndWait();
+    }
+}
+public void saveMachineGameHistoryDataToFile(File file) {
+    try {
+        JAXBContext context = JAXBContext.newInstance(GameHistoryListWrapper.class);
+        Marshaller m = context.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        // Wrapping our person data.
+        GameHistoryListWrapper wrapper = new GameHistoryListWrapper();
+        wrapper.setGameHistory(gameHistoryData);
+
+        // Marshalling and saving XML to the file.
+        m.marshal(wrapper, file);
+
+        // Save the file path to the registry.
+        setMachineFilePath(file);
+    } catch (Exception e) { // catches ANY exception
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Could not save data");
+        alert.setContentText("Could not save data to file:\n" + file.getPath());
+
+        alert.showAndWait();
+    }
+}
 public void showDateStatistics() {
     try {
         // Load the fxml file and create a new stage for the popup.

@@ -36,6 +36,12 @@ public class RootLayoutController {
     private Tab dealerTab;
     @FXML
     private Tab machinesTab;
+    @FXML
+    private Tab machinesListTab;
+    @FXML
+    private Tab machinesAwardsTab;
+    @FXML
+    private Tab machinesGamesHistoryTab;
     
     // Reference to the main application
     private MainApp mainApp;
@@ -59,12 +65,20 @@ public class RootLayoutController {
         mainApp.setDealerFilePath(null);
         }
         if(machinesTab.isSelected()){
+        
         mainApp.getMachineData().clear();
         mainApp.setMachineFilePath(null);
         }
-        
+         if( machinesAwardsTab.isSelected()){
+             mainApp.getAwardData().clear();
+             mainApp.setAwardFilePath(null);
+         }
+         if(machinesGamesHistoryTab.isSelected()){
+             mainApp.getGameHistoryData().clear();
+             mainApp.setGameHistoryFilePath(null);
+         }
+    
     }
-
     /**
      * Opens a FileChooser to let the user select an address book to load.
      */
@@ -81,7 +95,11 @@ public class RootLayoutController {
         File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
 
         if (file != null) {
-            mainApp.loadDealerDataFromFile(file);
+            if(dealerTab.isSelected()) mainApp.loadDealerDataFromFile(file);
+            if(machinesListTab.isSelected()) mainApp.loadDataFromFileMachine(file);
+            if(machinesAwardsTab.isSelected()) mainApp.loadDataFromFileAward(file);
+            if(machinesGamesHistoryTab.isSelected()) mainApp.loadDataFromFileGameHistory(file);
+            
         }
     }
 
@@ -94,20 +112,26 @@ public class RootLayoutController {
       
         if(dealerTab.isSelected()){
         File dealerFile = mainApp.getDealerFilePath();
-        if (dealerFile != null) {
-            mainApp.saveDealerDataToFile(dealerFile);
-        } else {
-            handleSaveAs();
+        if (dealerFile != null) { mainApp.saveDealerDataToFile(dealerFile);
+        } else { handleSaveAs();}
         }
-        }
-        if(machinesTab.isSelected()){
+        if(machinesListTab.isSelected()){
             File machineFile = mainApp.getMachineFilePath();
         if (machineFile!= null) {
             mainApp.saveMachineDataToFile(machineFile);
-        } else {
-            handleSaveAs();
+        } else {handleSaveAs();}    
         }
-            
+        if(machinesAwardsTab.isSelected()){
+            File machineFile = mainApp.getAwardFilePath();
+        if (machineFile!= null) {
+            mainApp.saveMachineAwardsDataToFile(machineFile);
+        } else {handleSaveAs();}    
+        }
+        if(machinesGamesHistoryTab.isSelected()){
+            File machineFile = mainApp.getGameHistoryFilePath();
+        if (machineFile!= null) {
+            mainApp.saveMachineGameHistoryDataToFile(machineFile);
+        } else {handleSaveAs();}    
         }
     }
 
@@ -132,7 +156,9 @@ public class RootLayoutController {
                 file = new File(file.getPath() + ".xml");
             }
             if(dealerTab.isSelected())mainApp.saveDealerDataToFile(file);
-            if(machinesTab.isSelected())mainApp.saveMachineDataToFile(file);
+            if(machinesListTab.isSelected())mainApp.saveMachineDataToFile(file);
+            if(machinesAwardsTab.isSelected()) mainApp.saveMachineAwardsDataToFile(file);
+            if(machinesGamesHistoryTab.isSelected()) mainApp.saveMachineGameHistoryDataToFile(file);
     }
     }
     
