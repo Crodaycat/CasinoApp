@@ -13,6 +13,14 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import casinoapp.MainApp;
 import casinoapp.model.Dealer;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import javafx.scene.control.Tab;
 
 /**
@@ -46,8 +54,15 @@ public class RootLayoutController {
      */
     @FXML
     private void handleNew() {
+        if(dealerTab.isSelected()){
         mainApp.getDealerData().clear();
         mainApp.setDealerFilePath(null);
+        }
+        if(machinesTab.isSelected()){
+        mainApp.getMachineData().clear();
+        mainApp.setMachineFilePath(null);
+        }
+        
     }
 
     /**
@@ -76,11 +91,23 @@ public class RootLayoutController {
      */
     @FXML
     private void handleSave() {
-        File personFile = mainApp.getDealerFilePath();
-        if (personFile != null) {
-            mainApp.saveDealerDataToFile(personFile);
+      
+        if(dealerTab.isSelected()){
+        File dealerFile = mainApp.getDealerFilePath();
+        if (dealerFile != null) {
+            mainApp.saveDealerDataToFile(dealerFile);
         } else {
             handleSaveAs();
+        }
+        }
+        if(machinesTab.isSelected()){
+            File machineFile = mainApp.getMachineFilePath();
+        if (machineFile!= null) {
+            mainApp.saveMachineDataToFile(machineFile);
+        } else {
+            handleSaveAs();
+        }
+            
         }
     }
 
@@ -104,10 +131,10 @@ public class RootLayoutController {
             if (!file.getPath().endsWith(".xml")) {
                 file = new File(file.getPath() + ".xml");
             }
-            mainApp.saveDealerDataToFile(file);
-        }
+            if(dealerTab.isSelected())mainApp.saveDealerDataToFile(file);
+            if(machinesTab.isSelected())mainApp.saveMachineDataToFile(file);
     }
-    
+    }
     
 
     /**
@@ -122,6 +149,7 @@ public class RootLayoutController {
 
         alert.showAndWait();
     }
+    
 
     /**
      * Closes the application.

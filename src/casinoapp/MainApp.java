@@ -512,6 +512,30 @@ public void saveDealerDataToFile(File file) {
         alert.showAndWait();
     }
 }
+public void saveMachineDataToFile(File file) {
+    try {
+        JAXBContext context = JAXBContext.newInstance(MachineListWrapper.class);
+        Marshaller m = context.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        // Wrapping our person data.
+        MachineListWrapper wrapper = new MachineListWrapper();
+        wrapper.setMachines(machineData);
+
+        // Marshalling and saving XML to the file.
+        m.marshal(wrapper, file);
+
+        // Save the file path to the registry.
+        setMachineFilePath(file);
+    } catch (Exception e) { // catches ANY exception
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Could not save data");
+        alert.setContentText("Could not save data to file:\n" + file.getPath());
+
+        alert.showAndWait();
+    }
+}
 public void showDateStatistics() {
     try {
         // Load the fxml file and create a new stage for the popup.

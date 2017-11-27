@@ -174,7 +174,7 @@ public class MachineOverviewController {
             } else {
                 FilteredList<GameHistory> machineHistory = filterHistoriesByDateAndSerie(machine.getSerie(), LocalDate.now());
                 if (machineHistory.isEmpty()) {
-                    makeHistory();
+                    makeHistory(machine, machineAwards);
                 } else {
                     makePDF(machine, machineHistory, machineAwards);
                 }
