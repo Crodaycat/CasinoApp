@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javafx.scene.control.Tab;
 
+
 /**
  * The controller for the root layout. The root layout provides the basic
  * application layout containing a menu bar and space where other JavaFX
@@ -42,6 +43,8 @@ public class RootLayoutController {
     private Tab machinesAwardsTab;
     @FXML
     private Tab machinesGamesHistoryTab;
+   
+  
     
     // Reference to the main application
     private MainApp mainApp;
@@ -64,20 +67,12 @@ public class RootLayoutController {
         mainApp.getDealerData().clear();
         mainApp.setDealerFilePath(null);
         }
-        if(machinesTab.isSelected()){
+        else if(machinesTab.isSelected()){
         
         mainApp.getMachineData().clear();
         mainApp.setMachineFilePath(null);
         }
-         if( machinesAwardsTab.isSelected()){
-             mainApp.getAwardData().clear();
-             mainApp.setAwardFilePath(null);
-         }
-         if(machinesGamesHistoryTab.isSelected()){
-             mainApp.getGameHistoryData().clear();
-             mainApp.setGameHistoryFilePath(null);
-         }
-    
+       
     }
     /**
      * Opens a FileChooser to let the user select an address book to load.
@@ -97,8 +92,7 @@ public class RootLayoutController {
         if (file != null) {
             if(dealerTab.isSelected()) mainApp.loadDealerDataFromFile(file);
             if(machinesListTab.isSelected()) mainApp.loadDataFromFileMachine(file);
-            if(machinesAwardsTab.isSelected()) mainApp.loadDataFromFileAward(file);
-            if(machinesGamesHistoryTab.isSelected()) mainApp.loadDataFromFileGameHistory(file);
+            
             
         }
     }
@@ -119,18 +113,6 @@ public class RootLayoutController {
             File machineFile = mainApp.getMachineFilePath();
         if (machineFile!= null) {
             mainApp.saveMachineDataToFile(machineFile);
-        } else {handleSaveAs();}    
-        }
-        if(machinesAwardsTab.isSelected()){
-            File machineFile = mainApp.getAwardFilePath();
-        if (machineFile!= null) {
-            mainApp.saveMachineAwardsDataToFile(machineFile);
-        } else {handleSaveAs();}    
-        }
-        if(machinesGamesHistoryTab.isSelected()){
-            File machineFile = mainApp.getGameHistoryFilePath();
-        if (machineFile!= null) {
-            mainApp.saveMachineGameHistoryDataToFile(machineFile);
         } else {handleSaveAs();}    
         }
     }
@@ -157,8 +139,6 @@ public class RootLayoutController {
             }
             if(dealerTab.isSelected())mainApp.saveDealerDataToFile(file);
             if(machinesListTab.isSelected())mainApp.saveMachineDataToFile(file);
-            if(machinesAwardsTab.isSelected()) mainApp.saveMachineAwardsDataToFile(file);
-            if(machinesGamesHistoryTab.isSelected()) mainApp.saveMachineGameHistoryDataToFile(file);
     }
     }
     

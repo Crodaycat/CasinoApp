@@ -22,12 +22,17 @@ import javafx.stage.Stage;
  * @author USUARIO
  */
 public class MachineEditDialogController {
-
-    @FXML
-    private TextField txtSerie;
-    @FXML
-    private TextField txtType;
     
+    @FXML
+    private TextField machineSerieField;
+    @FXML
+    private TextField machineAwardField;
+    @FXML
+    private TextField machineMoneyCollectedField;
+    @FXML
+    private TextField machineAwardDateField;
+    @FXML
+    private TextField machinePriceField;
     
     private Stage dialogStage;
     private Machine machine;
@@ -46,8 +51,12 @@ public class MachineEditDialogController {
     public void setMachine(Machine machine) {
         this.machine = machine;
         
-        txtSerie.setText(machine.getSerie());
-        txtType.setText(machine.getType());
+        machineSerieField.setText(machine.getSerie());
+        machineAwardField.setText(String.valueOf(machine.getAward()));
+        machineMoneyCollectedField.setText(String.valueOf(machine.getMoneyCollected()));
+        machineAwardDateField.setText(DateUtil.format(machine.getAwardDate()));
+        machineAwardDateField.setPromptText("dd.mm.yyyy");
+        machinePriceField.setText(String.valueOf(machine.getPrice()));
     }
     
     public boolean isOkClicked() {
@@ -57,8 +66,12 @@ public class MachineEditDialogController {
     @FXML
     private void handleOk() {
         if (isInputValid()) {
-            machine.setSerie(txtSerie.getText());
-            machine.setType(txtType.getText());
+            machine.setSerie(machineSerieField.getText());
+            machine.setAward(Float.parseFloat(machineAwardField.getText()));
+            machine.setMoneyCollected(Float.parseFloat(machineMoneyCollectedField.getText()));
+            machine.setAwardDate(DateUtil.parse(machineAwardDateField.getText()));
+            machine.setPrice(Float.parseFloat(machinePriceField.getText()));
+            
             
             okClicked = true;
             dialogStage.close();
@@ -73,12 +86,15 @@ public class MachineEditDialogController {
     private boolean isInputValid() {
         String errorMessage = "";
 
-        if (txtSerie.getText() == null || txtSerie.getText().length() == 0) {
+        if (machineSerieField.getText() == null || machineSerieField.getText().length() == 0) {
             errorMessage += "No valid Serie!\n"; 
         }
         
-        if (txtType.getText() == null || txtType.getText().length() == 0) {
-            errorMessage += "No valid Type!\n"; 
+        if (machineAwardDateField.getText() == null || machineAwardDateField.getText().length() == 0) {
+            errorMessage += "No valid Date!\n"; 
+        }
+        if (Double.parseDouble(machinePriceField.getText()) > Double.parseDouble(machineMoneyCollectedField.getText())) {
+            errorMessage += "No valid Profit!\n"; 
         }
 
         if (errorMessage.length() == 0) {

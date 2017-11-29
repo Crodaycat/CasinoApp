@@ -18,6 +18,7 @@ import casinoapp.util.DateUtil;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.FileChooser;
 
 public class DealerOverviewController {
     @FXML
@@ -78,7 +80,7 @@ public class DealerOverviewController {
                  cellData -> cellData.getValue().FinancialProfitProperty());
         
 
-         // Clear person details.
+         // Clear dealers details.
          showDealerDetails(null);
 
          // Listen for selection changes and show the person details when changed.
@@ -136,7 +138,7 @@ public class DealerOverviewController {
        Alert alert = new Alert(AlertType.WARNING);
        alert.setTitle("No Selection");
        alert.setHeaderText(null);
-       alert.setContentText("Please select a person in the table.");
+       alert.setContentText("Please select a dealer in the table.");
        alert.showAndWait();
     }
 }
@@ -171,15 +173,16 @@ private void handleEditDealer() {
         Alert alert = new Alert(AlertType.WARNING);
         alert.initOwner(mainApp.getPrimaryStage());
         alert.setTitle("No Selection");
-        alert.setHeaderText("No Person Selected");
-        alert.setContentText("Please select a person in the table.");
+        alert.setHeaderText("No Dealer Selected");
+        alert.setContentText("Please select a dealer in the table.");
 
         alert.showAndWait();
     }
 }
 @FXML
     private void exportarPDF() throws FileNotFoundException, IOException {
-
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
         FileWriter fichero = null;
         PrintWriter pw = null;
         Dealer e = (dealerTable.getSelectionModel().getSelectedItem());
@@ -188,13 +191,13 @@ private void handleEditDealer() {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("No Seleccionó");
             alert.setHeaderText(null);
-            alert.setContentText("Por favor seleccione una persona de la tabla.");
+            alert.setContentText("Por favor seleccione un dealer de la tabla.");
             alert.showAndWait();
         } else {
             String nom = e.getId()+e.getLastName()+e.getFirstName()+e.getDate();
 
             try {
-                FileOutputStream archivo = new FileOutputStream("PDF/Dealer"+ nom + ".pdf");
+                FileOutputStream archivo = new FileOutputStream(file + ".pdf");
                 Document doc = new Document();
 
                 PdfWriter.getInstance(doc, archivo);
@@ -207,11 +210,10 @@ private void handleEditDealer() {
             } catch (Exception a) {
 
             }
-            String tmp="El archivo fue generado en la Ruta PDF/Dealers"+nom+".pdf";
+            
             Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Fichero PDF creado con exito");
+            alert.setContentText("Fichero PDF creado con exito");
             alert.setHeaderText(null);
-            alert.setContentText(tmp);
             alert.show();
         }
     }

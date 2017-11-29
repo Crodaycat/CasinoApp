@@ -5,9 +5,7 @@
  */
 package casinoapp;
 
-import casinoapp.model.Award;
 import casinoapp.model.Dealer;
-import casinoapp.model.GameHistory;
 import casinoapp.model.Machine;
 import casinoapp.util.DateUtil;
 import casinoapp.util.LocalDateAdapter;
@@ -18,8 +16,11 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,6 +35,7 @@ import java.util.Random;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.FileChooser;
 
 /**
  * FXML Controller class
@@ -47,51 +49,21 @@ public class MachineOverviewController {
     @FXML
     private TableColumn<Machine, String> machineSerie;
     @FXML
-    private TableColumn<Machine, String> machineType;
+    private TableColumn<Machine, String> machineAward;
+    @FXML
+    private TableColumn<Machine, String> machineMoneyCollected;
+    @FXML
+    private TableColumn<Machine, String> machineAwardPrice;
+    @FXML
+    private Label machineMoneyLabel;
+    @FXML
+    private Label machineDateLabel;
+    @FXML
+    private Label machinePriceLabel;
     @FXML
     private Label machineSerieLabel;
     @FXML
-    private Label machineTypeLabel;
-    @FXML
-    private TableView<Award> awardsTable;
-    @FXML
-    private TableColumn<Award, String> awardIdCol;
-    @FXML
-    private TableColumn<Award, String> awardMachineTypeCol;
-    @FXML
-    private TableColumn<Award, String> awardDescriptionCol;
-    @FXML
-    private TableColumn<Award, String> awardPriceCol;
-    @FXML
-    private TableView<GameHistory> gameHistoryTable;
-    @FXML
-    private Label awardId;
-    @FXML
-    private Label awardMachineType;
-    @FXML
-    private Label awardDescription;
-    @FXML
-    private Label awardPrice;
-    @FXML
-    private TableColumn<GameHistory, String> gameMachineSerie;
-    @FXML
-    private TableColumn<GameHistory, String> gameAwardId;
-    @FXML
-    private TableColumn<GameHistory, String> gameMoneyCollected;
-    @FXML
-    private TableColumn<GameHistory, LocalDate> gameAwardDate;
-    @FXML
-    private TableColumn<GameHistory, String> gameAwardPrice;
-    @FXML
-    private Label gameMachineLabel;
-    @FXML
-    private Label gameMoneyLabel;
-    @FXML
-    private Label gameAwardLabel;
-    @FXML
-    private Label gameDateLabel;
-    @FXML
-    private Label gamePriceLabel;
+    private Label machineAwardLabel;
     
     private MainApp mainApp;
 
@@ -99,9 +71,21 @@ public class MachineOverviewController {
      * Initializes the controller class.
      */
     public void initialize() {
-        initializeMachineTable();
-        initializeAwardTable();
-        initializeGameHistoryTable();
+        machineSerie.setCellValueFactory (
+            cellData -> cellData.getValue().getSerieProperty());
+        machineAward.setCellValueFactory (
+            cellData -> cellData.getValue().getAwardProperty().asString());
+        machineMoneyCollected.setCellValueFactory (
+            cellData -> cellData.getValue().getmoneyCollectedProperty().asString());
+       
+        machineAwardPrice.setCellValueFactory (
+            cellData -> cellData.getValue().getPriceProperty().asString());
+      
+            showMachineDetails(null);
+
+         // Listen for selection changes and show the person details when changed.
+         machinesTable.getSelectionModel().selectedItemProperty().addListener(
+                 (observable, oldValue, newValue) -> showMachineDetails(newValue));
         
         try {
             machinesTable.setItems(mainApp.getMachineData());
@@ -112,333 +96,121 @@ public class MachineOverviewController {
         //awardsTable.setItems(mainApp.getAwardData());
         //gameHistoryTable.setItems(mainApp.getGameHistoryData());
     }    
-
-    @FXML
-    private void handleNewMachine(ActionEvent event) {
-        Machine tempMachine = new Machine();
-        boolean okClicked = mainApp.showMachineEditDialog(tempMachine);
-        if (okClicked) {
-            mainApp.getMachineData().add(tempMachine);
-        }
-        
-    }
-
-    @FXML
-    private void handleEditMachine(ActionEvent event) {
-        Machine selectedMachine = machinesTable.getSelectionModel().getSelectedItem();
-        if (selectedMachine != null) {
-            boolean okClicked = mainApp.showMachineEditDialog(selectedMachine);
-            if (okClicked) {
-                showMachineDatails(selectedMachine);
-            }
-
-        } else {
-            // Nothing selected.
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.initOwner(mainApp.getPrimaryStage());
-            alert.setTitle("No Selection");
-            alert.setHeaderText("No Machine Selected");
-            alert.setContentText("Please select a Machine in the table.");
-
-            alert.showAndWait();
-        }
-    }
-
-    @FXML
-    private void handleDeleteMachine(ActionEvent event) {
-        int selectedIndex = machinesTable.getSelectionModel().getSelectedIndex();
-        if (selectedIndex >= 0) {
-            machinesTable.getItems().remove(selectedIndex);
-        } else {
-            // Nothing selected.
-           Alert alert = new Alert(Alert.AlertType.WARNING);
-           alert.setTitle("No Selection");
-           alert.setHeaderText(null);
-           alert.setContentText("Please select a Machine in the table.");
-           alert.showAndWait();
-        }
-    }
-
-    @FXML
-    private void handleExportPDF(ActionEvent event) {
-        Machine machine = machinesTable.getSelectionModel().getSelectedItem();
-        
-        if (machine != null) {
-            FilteredList<Award> machineAwards = filterAwardsByMachineType(machine.getType());
-            if (machineAwards.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("No Awards Found for this machine Type");
-                alert.setHeaderText(null);
-                alert.setContentText("Please create awards for this machine Type.");
-                alert.showAndWait();
-            } else {
-                FilteredList<GameHistory> machineHistory = filterHistoriesByDateAndSerie(machine.getSerie(), LocalDate.now());
-                if (machineHistory.isEmpty()) {
-                    makeHistory(machine, machineAwards);
-                } else {
-                    makePDF(machine, machineHistory, machineAwards);
-                }
-            }
-        } else {
-            // Nothing selected.
-           Alert alert = new Alert(Alert.AlertType.WARNING);
-           alert.setTitle("No Selection");
-           alert.setHeaderText(null);
-           alert.setContentText("Please select a Machine in the table.");
-           alert.showAndWait();
-        }
-    }
-    
-    private FilteredList<Award> filterAwardsByMachineType (String type) {
-        FilteredList<Award> filteredAwards = new FilteredList<>(mainApp.getAwardData(), award -> award.getMachineType().equals(type));
-        return filteredAwards;
-    }
-    
-    private FilteredList<GameHistory> filterHistoriesByDateAndSerie (String machineSerie, LocalDate date) {
-        FilteredList<GameHistory> filteredHistories = new FilteredList<>(mainApp.getGameHistoryData(), 
-                history -> history.getMachineSerie().equals(machineSerie) && history.getAwardDate().equals(date));
-        return filteredHistories;
-    }
-    
-    private FilteredList<GameHistory> makeHistory (Machine machine, FilteredList<Award> awards) {
-        Random randomGenerator = new Random();
-        int awardsRate = randomGenerator.nextInt(6) + 95;
-        LocalDate today = LocalDate.now();
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Date");
-        alert.setHeaderText(null);
-        alert.setContentText(today.toString());
-        alert.showAndWait();
-        return null;
-    }
-    
-    private void makePDF (Machine machine, FilteredList<GameHistory> history, FilteredList<Award> awards) {
-        FileWriter fichero = null;
-        PrintWriter pw = null;
-        String nom = machine.getSerie()+"-"+machine.getType();
-        try {
-            FileOutputStream archivo = new FileOutputStream("PDF/Machine"+ nom + ".pdf");
-            Document doc = new Document();
-
-            PdfWriter.getInstance(doc, archivo);
-            doc.open();
-            
-            Paragraph titulo = new Paragraph();
-            titulo.setAlignment(Paragraph.ALIGN_CENTER);
-            titulo.setFont(FontFactory.getFont("Times New Roman", 24, Font.BOLD, BaseColor.RED));
-            titulo.add("INVENTARIO\n\n");
-            titulo.add("Maquína con número de serie " + machine.getSerie()+"\n");
-            titulo.add("Tipo " + machine.getType() + "\n");
-            titulo.add(LocalDate.now().toString() + "\n\n");
-            
-            try {
-                doc.add(titulo);
-                
-            } catch (Exception e) {
-            }
-            
-            
-            //Set table column number, width of the table and width of each column
-            PdfPTable table = new PdfPTable(4); 
-            table.setWidthPercentage(100);
-            table.setWidths(new float[] {40, 20, 20, 20});
-            
-            Paragraph column = new Paragraph("Descripción");
-            column.getFont().setStyle(Font.BOLD);
-            column.getFont().setSize(10);
-            table.addCell(column);
-            
-            column = new Paragraph("Dinero adquirido");
-            column.getFont().setStyle(Font.BOLD);
-            column.getFont().setSize(10);
-            table.addCell(column);
-            
-            column = new Paragraph("Valor del premio");
-            column.getFont().setStyle(Font.BOLD);
-            column.getFont().setSize(10);
-            table.addCell(column);
-            
-            column = new Paragraph("Subtotal");
-            column.getFont().setStyle(Font.BOLD);
-            column.getFont().setSize(10);
-            table.addCell(column);
-            
-            double total = 0;
-            for (GameHistory award : history) {
-                FilteredList<Award> awardInfo = new FilteredList<> (awards, item -> item.getAwardId().equals(award.getAwardId()));
-                table.addCell(new Paragraph(awardInfo.get(0).getDescription()));
-                float collected = Float.parseFloat(award.getMoneyCollected());
-                float price = Float.parseFloat(award.getAwardPrice());
-                float subtotal = collected - price;
-                total += subtotal;
-                table.addCell(new Paragraph(String.valueOf(collected)));
-                table.addCell(new Paragraph(String.valueOf(price)));
-                table.addCell(new Paragraph(String.valueOf(subtotal)));
-            }
-            
-            table.addCell(new Paragraph(""));
-            table.addCell(new Paragraph(""));
-            column = new Paragraph("Total:");
-            column.getFont().setStyle(Font.BOLD);
-            column.getFont().setSize(10);
-            table.addCell(column);
-            table.addCell(new Paragraph(String.valueOf(total)));
-            
-            doc.add(table);
-            
-            doc.close();
-            PdfWriter.getInstance(doc, archivo);
-        } catch (Exception a) {
-
-        }
-        String tmp="El archivo fue generado en la Ruta PDF/Machine"+nom+".pdf";
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Fichero PDF creado con exito");
-        alert.setHeaderText(null);
-        alert.setContentText(tmp);
-        alert.show();
-    }
-
-    @FXML
-    private void handleNewAward() {
-        Award tempAward = new Award();
-        boolean okClicked = mainApp.showAwardEditDialog(tempAward);
-        if (okClicked) {
-            mainApp.getAwardData().add(tempAward);
-        }
-        
-    }
-
-    @FXML
-    private void handleEditAward() {
-        Award selectedAward = awardsTable.getSelectionModel().getSelectedItem();
-        if (selectedAward != null) {
-            boolean okClicked = mainApp.showAwardEditDialog(selectedAward);
-            if (okClicked) {
-                showAwardDatails(selectedAward);
-            }
-
-        } else {
-            // Nothing selected.
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.initOwner(mainApp.getPrimaryStage());
-            alert.setTitle("No Selection");
-            alert.setHeaderText("No Machine Selected");
-            alert.setContentText("Please select a Machine in the table.");
-
-            alert.showAndWait();
-        }
-    }
-
-    @FXML
-    private void handleDeleteAward() {
-        int selectedIndex = awardsTable.getSelectionModel().getSelectedIndex();
-        if (selectedIndex >= 0) {
-            awardsTable.getItems().remove(selectedIndex);
-        } else {
-            // Nothing selected.
-           Alert alert = new Alert(Alert.AlertType.WARNING);
-           alert.setTitle("No Selection");
-           alert.setHeaderText(null);
-           alert.setContentText("Please select a Award in the table.");
-           alert.showAndWait();
-        }
-    }
-    
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
 
         // Add observable list data to the table
         machinesTable.setItems(mainApp.getMachineData());
-        awardsTable.setItems(mainApp.getAwardData());
-        gameHistoryTable.setItems(mainApp.getGameHistoryData());
     }
     
-    private void showMachineDatails (Machine machine) {
-        if (machine != null) {
-            machineSerieLabel.setText(machine.getSerie());
-            machineTypeLabel.setText(machine.getType());
+   private void showMachineDetails(Machine machine) {
+    if (machine!= null) {
+        // Fill the labels with info from the person object.
+        machineSerieLabel.setText(machine.getSerie());
+        machineAwardLabel.setText(String.valueOf(machine.getAward()));
+        machineMoneyLabel.setText(String.valueOf(machine.getMoneyCollected()));
+        machineDateLabel.setText(DateUtil.format(machine.getAwardDate()));
+        machinePriceLabel.setText(String.valueOf(machine.getPrice()));
+        
+    } else {
+        // Person is null, remove all the text.
+        machineSerieLabel.setText("");
+        machineAwardLabel.setText("");
+        machineMoneyLabel.setText("");
+        machineDateLabel.setText("");
+        machinePriceLabel.setText("");
+    }
+   }
+    
+    @FXML
+    private void handleDeleteMachine() {
+    int selectedIndex = machinesTable.getSelectionModel().getSelectedIndex();
+    if (selectedIndex >= 0) {
+        machinesTable.getItems().remove(selectedIndex);
+    } else {
+        // Nothing selected.
+       Alert alert = new Alert(AlertType.WARNING);
+       alert.setTitle("No Selection");
+       alert.setHeaderText(null);
+       alert.setContentText("Please select a machine in the table.");
+       alert.showAndWait();
+    }
+}
+    /**
+ * Called when the user clicks the new button. Opens a dialog to edit
+ * details for a new person.
+ */
+@FXML
+private void handleNewMachine() {
+    Machine tempMachine = new Machine();
+    boolean okClicked = mainApp.showMachineEditDialog(tempMachine);
+    if (okClicked) {
+        mainApp.getMachineData().add(tempMachine);
+    }
+}
+
+/**
+ * Called when the user clicks the edit button. Opens a dialog to edit
+ * details for the selected person.
+ */
+@FXML
+private void handleEditMachine() {
+    Machine selectedMachine = machinesTable.getSelectionModel().getSelectedItem();
+    if (selectedMachine != null) {
+        boolean okClicked = mainApp.showMachineEditDialog(selectedMachine);
+        if (okClicked) {
+            showMachineDetails(selectedMachine);
+        }
+
+    } else {
+        // Nothing selected.
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.initOwner(mainApp.getPrimaryStage());
+        alert.setTitle("No Selection");
+        alert.setHeaderText("No Machine Selected");
+        alert.setContentText("Please select a machine in the table.");
+
+        alert.showAndWait();
+    }
+}
+@FXML
+    private void handleExportPDF() throws FileNotFoundException, IOException {
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        Machine e = (machinesTable.getSelectionModel().getSelectedItem());
+        if (e == null) {
+
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("No Seleccionó");
+            alert.setHeaderText(null);
+            alert.setContentText("Por favor seleccione una maquina de la tabla.");
+            alert.showAndWait();
         } else {
-            machineSerieLabel.setText("");
-            machineTypeLabel.setText("");
+            String nom = e.getSerie()+e.getAwardDate();
+
+            try {
+                FileOutputStream archivo = new FileOutputStream(file+".pdf");
+                Document doc = new Document();
+
+                PdfWriter.getInstance(doc, archivo);
+                doc.open();
+                doc.add(new Paragraph("Machine Serie:"+e.getSerie()+"\n"+
+                        "Award money"+e.getAward()+" "+"\n"+"Day of award"+e.getAward()+"\n"
+                +"House's profit"+e.getPrice()+"\n"+"Total Money Collected: "+e.getMoneyCollected()));
+                doc.close();
+                PdfWriter.getInstance(doc, archivo);
+            } catch (Exception a) {
+
+            }
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setContentText("Fichero PDF creado con exito");
+            alert.setHeaderText(null);
+            alert.show();
         }
     }
+
     
-    private void showAwardDatails (Award award) {
-        if (award != null) {
-            
-            awardId.setText(award.getAwardId());
-            awardMachineType.setText(award.getMachineType());
-            awardDescription.setText(award.getDescription());
-            awardPrice.setText(String.valueOf(award.getPrice()));
-        } else {
-           awardId.setText("");
-           awardMachineType.setText("");
-           awardDescription.setText("");
-           awardPrice.setText(""); 
-        }
-    }
-    
-    private void showGameHistoryDatails (GameHistory gameHistory) {
-        if (gameHistory != null) {
-            gameMachineLabel.setText(gameHistory.getMachineSerie());
-            gameMoneyLabel.setText(String.valueOf(gameHistory.getMoneyCollected()));
-            gameAwardLabel.setText(gameHistory.getAwardId());
-            gameDateLabel.setText(DateUtil.format(gameHistory.getAwardDate()));
-            gamePriceLabel.setText(gameHistory.getAwardPrice());
-        } else {
-            gameMachineLabel.setText("");
-            gameMoneyLabel.setText("");
-            gameAwardLabel.setText("");
-            gameDateLabel.setText("");
-            gamePriceLabel.setText("");
-        }
-    }
-    
-    private void initializeMachineTable () {
-        machineSerie.setCellValueFactory(
-            cellData -> cellData.getValue().getSerieProperty());
-        machineType.setCellValueFactory(
-            cellData -> cellData.getValue().getTypeProperty());
-        
-        showMachineDatails(null);
-        
-        machinesTable.getSelectionModel().selectedItemProperty().addListener(
-                 (observable, oldValue, newValue) -> showMachineDatails(newValue));
-    }
-    
-    private void initializeAwardTable () {
-        awardIdCol.setCellValueFactory(
-            cellData -> cellData.getValue().getAwardIdProperty());
-        awardMachineTypeCol.setCellValueFactory(
-            cellData -> cellData.getValue().getMachineTypeProperty());
-        awardDescriptionCol.setCellValueFactory(
-            cellData -> cellData.getValue().getDescriptionProperty());
-        awardPriceCol.setCellValueFactory(
-            cellData -> cellData.getValue().getPriceProperty());
-        
-        showAwardDatails(null);
-        
-        awardsTable.getSelectionModel().selectedItemProperty().addListener(
-                 (observable, oldValue, newValue) -> showAwardDatails(newValue));
-    }
-    
-    private void initializeGameHistoryTable () {
-        gameMachineSerie.setCellValueFactory (
-            cellData -> cellData.getValue().getMachineSerieProperty());
-        gameAwardId.setCellValueFactory (
-            cellData -> cellData.getValue().getAwardIdProperty());
-        gameMoneyCollected.setCellValueFactory (
-            cellData -> cellData.getValue().getMoneyCollectedProperty());
-        gameAwardDate.setCellValueFactory (
-            cellData -> cellData.getValue().getAwardDateProperty());
-        gameAwardPrice.setCellValueFactory (
-            cellData -> cellData.getValue().getAwardPriceProperty());
-        
-        showGameHistoryDatails(null);
-        
-        gameHistoryTable.getSelectionModel().selectedItemProperty().addListener(
-                 (observable, oldValue, newValue) -> showGameHistoryDatails(newValue));
-    }
     
 }
